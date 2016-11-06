@@ -1,0 +1,20 @@
+<h1>Login</h1>
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()" >
+
+    <validation-summary [errorMessages]="errors" ></validation-summary>
+
+    <div>
+        <md-input placeholder="Username" formControlName="userName"></md-input>
+        <control-messages [control]="loginForm.controls.userName"></control-messages>
+    </div>
+
+    <div>
+        <md-input placeholder="Password" formControlName="password"></md-input>
+        <control-messages [control]="loginForm.controls.password"></control-messages>
+    </div>
+
+
+    <button md-raised-button color="primary" type="submit" [disabled]="!loginForm.valid" >Submit</button>
+    <a  routerLink="/auth/forgot-password" >Forgot your password?</a>
+</form>
+
