@@ -33,7 +33,7 @@ export class AccountComponent implements OnInit {
     submitChangePassword(){
         let password = Object.assign({}, this.resetPasswordForm.value, this.resetPasswordForm.controls["passwords"].value);
         delete password["passwords"];
-        console.log(password)
+
         this.account.changePassword(password)
             .subscribe(
                 () => this.alert.sendSuccess("Password successfully sent"),
