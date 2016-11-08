@@ -1,6 +1,3 @@
-/**
- * Created by Fabian on 26/10/2016.
- */
 import {Observable} from "rxjs";
 
 export class Storage {

@@ -1,6 +1,3 @@
-/**
- * Created by Fabian on 24/09/2016.
- */
 // Angular
 import '@angular/common';
 import '@angular/core';

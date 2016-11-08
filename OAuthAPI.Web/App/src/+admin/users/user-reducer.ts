@@ -1,6 +1,3 @@
-/**
- * Created by Fabian on 31/10/2016.
- */
 import { ActionReducer, Action } from '@ngrx/store';
 import { User } from '../models/user';
 
