@@ -6,7 +6,7 @@ import { Alert }             from '../core/models/alert.model';
 import { alertsReducer }     from '../shared/alert/alert.reducer';
 import { loadingBarReducer } from '../shared/loading-bar/loading-bar.reducer';
 import { usersReducer }      from '../+admin/users/user-reducer';
-import { authReducer, Auth } from '../core/auth/auth.store';
+import { authReducer, Auth } from '../core/stores/auth.store';
 
 export interface AppState{
     users: User[],

@@ -5,7 +5,7 @@ import {ProfileService} from "../profile/profile.service";
 import {AppState} from '../../app/app-store';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
-import {Auth} from '../auth/auth.store';
+import {Auth} from '../stores/auth.store';
 
 
 @Injectable()

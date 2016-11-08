@@ -13,9 +13,9 @@ import {FormValidationService} from "./services/form-validation.service";
 import {AuthGuard} from './guards/auth-guard.service';
 import {TokenService} from './auth/token.service';
 import {AccountService} from './auth/account.service';
-import {AuthActions} from './auth/auth.store';
+import {AuthActions} from './stores/auth.store';
 import {TokenActions} from './auth/token.store';
-import {ProfileActions} from './profile/profile.store';
+import {ProfileActions} from './stores/profile.store';
 import {Logger, ConsoleLoggerBackend} from './logger';
 
 
@@ -39,7 +39,7 @@ import {Logger, ConsoleLoggerBackend} from './logger';
         ProfileActions,
 
         { provide: Storage, useClass: LocalStorageBackend },
-        { provide: Logger, useClass: ConsoleLoggerBackend},
+        { provide: Logger, useClass: ConsoleLoggerBackend },
         authProvider
     ]
 

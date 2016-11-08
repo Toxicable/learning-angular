@@ -7,11 +7,11 @@ import {HttpExceptionService} from '../services/http-exceptions.service';
 import {LoginModel} from '../../+auth/models/login-model';
 import {TokenService} from './token.service';
 import {AuthApiService} from '../services/auth-api.service';
-import {AuthActions} from './auth.store';
+import {AuthActions} from '../stores/auth.store';
 import {TokenActions} from './token.store';
 import {ProfileActions} from '../profile/profile.store';
 import {ChangePasswordModel} from '../models/change-password';
-import {ResetPasswordModel} from '../models/ResetPasswordModel';
+import {ResetPasswordModel} from '../models/reser-password.model';
 
 @Injectable()
 export class AccountService {
