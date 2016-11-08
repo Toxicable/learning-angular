@@ -6,6 +6,7 @@ using Microsoft.Owin;
 using OAuthAPI.Data;
 using OAuthAPI.Data.Identity;
 using OAuthAPI.WebApi.Api.Services;
+using System.Threading.Tasks;
 
 namespace OAuthAPI.WebApi.Api.Identity.Managers
 {
@@ -17,6 +18,16 @@ namespace OAuthAPI.WebApi.Api.Identity.Managers
         {
         }
 
+        public async Task<bool> AddExternalLogin(ExternalAccount externalAccount, ApplicationUser user)
+        {
+            externalAccount.Id = Guid.NewGuid().ToString();
+
+            user.ExternalAccount.Add(externalAccount);
+
+            await _context.SaveChangesAsync();
+
+            return true;
+        } 
        
 
         public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context)

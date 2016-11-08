@@ -11,12 +11,18 @@ namespace OAuthAPI.Data.Identity
 {
     public class ApplicationUser : IdentityUser
     {
+        public ApplicationUser()
+        {
+            ExternalAccount = new HashSet<ExternalAccount>();
+        }
 
         [Required]
         public DateTimeOffset AccountCreated { get; set; }
 
         public string FirstName { get; set; }
         public string LastName { get; set; }
+
+        public ICollection<ExternalAccount> ExternalAccount { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager, string authenticationType)
         {
