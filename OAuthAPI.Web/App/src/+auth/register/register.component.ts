@@ -31,6 +31,8 @@ export class RegisterComponent  implements OnInit {
 
     onSubmit(){
         let data = Object.assign({}, this.registerForm.value, this.registerForm.value.passwords);
+        delete data["passwords"];
+
         //TODO: find better way to do this :/
 
         this.account.register(data)

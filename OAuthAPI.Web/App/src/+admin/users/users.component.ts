@@ -9,8 +9,7 @@ import {User} from '../models/user';
 @Component({
     selector: 'user',
     templateUrl: './users.component.html',
-    styleUrls:
-        ["./users.component.scss"]
+    styleUrls: ["./users.component.scss"]
 })
 export class UsersComponent {
     @Input() user: User;
