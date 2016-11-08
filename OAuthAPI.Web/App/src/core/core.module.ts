@@ -17,6 +17,7 @@ import {AuthActions} from './stores/auth.store';
 import {ProfileActions} from './stores/profile.store';
 import {Logger, ConsoleLoggerBackend} from './logger';
 import {TokenActions} from './stores/token.store';
+import {ExternalAuthService} from './auth/external-auth.service';
 
 
 @NgModule({
@@ -37,6 +38,8 @@ import {TokenActions} from './stores/token.store';
         AuthActions,
         TokenActions,
         ProfileActions,
+
+        ExternalAuthService,
 
         { provide: Storage, useClass: LocalStorageBackend },
         //{ provide: Logger, useClass: ConsoleLoggerBackend },

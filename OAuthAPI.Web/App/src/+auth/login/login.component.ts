@@ -4,6 +4,9 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {FormValidationService} from "../../core/services/form-validation.service";
 import {AccountService} from '../../core/auth/account.service';
 import {AlertService} from '../../core/services/alert.service';
+import {FacebookAuthService} from '../../core/auth/providers/facebook.service';
+import {GoogleAuthService} from '../../core/auth/providers/google.service';
+import {ExternalAuthService} from '../../core/auth/external-auth.service';
 
 @Component({
     selector: 'login',
@@ -13,7 +16,8 @@ export class LoginComponent implements OnInit{
     constructor(private formBuilder: FormBuilder,
                 private account: AccountService,
                 private formValidator: FormValidationService,
-                private alert: AlertService
+                private alert: AlertService,
+                private externalAuth: ExternalAuthService
     ) { }
 
     loginForm: FormGroup;
@@ -24,6 +28,7 @@ export class LoginComponent implements OnInit{
             userName: ['', [Validators.required, this.formValidator.emailValidator]],
             password: ['', [Validators.required, this.formValidator.passwordValidator]],
         });
+        this.externalAuth.init();
     }
 
     onSubmit(){
@@ -36,8 +41,14 @@ export class LoginComponent implements OnInit{
                     console.log(error);
                 }
             );
+    }
 
+    facebookAuthorize(){
+        this.externalAuth.authorizeFacebook()
+    }
 
+    googleAuthorize(){
+        this.externalAuth.authorizeGoogle()
     }
 
 }
