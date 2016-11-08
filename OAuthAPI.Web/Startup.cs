@@ -43,10 +43,7 @@ namespace OAuthAPI.WebApi
 
             app.UseStaticFiles();
         }
-
-        private const string Issuer = "http://localhost:59822/";
-
-
+        
         private void ConfigureOAuthTokenGeneration(IAppBuilder app)
         {
             // Configure the db context and user manager to use a single instance per request
@@ -61,17 +58,17 @@ namespace OAuthAPI.WebApi
                 TokenEndpointPath = new PathString("/api/token"),
                 AccessTokenExpireTimeSpan = TimeSpan.FromMinutes(1),
                 Provider = new OAuthProvider(),
-                AccessTokenFormat = new CustomJwtFormat(Issuer),
+                AccessTokenFormat = new CustomJwtFormat(ConfigurationManager.AppSettings["as:Issuer"]),
                 RefreshTokenProvider = new RefreshTokenProvider()
             };
 
             // OAuth 2.0 Bearer Access Token Generation
-            app.UseOAuthAuthorizationServer(OAuthServerOptions);
+            app.UseOAuthAuthorizationServer(OAuthServerOptions);            
+
         }
 
         private void ConfigureOAuthTokenConsumption(IAppBuilder app) {
-
-            var issuer = Issuer;
+            
             string audienceId = ConfigurationManager.AppSettings["as:AudienceId"];
             byte[] audienceSecret = TextEncodings.Base64Url.Decode(ConfigurationManager.AppSettings["as:AudienceSecret"]);
 
@@ -83,7 +80,7 @@ namespace OAuthAPI.WebApi
                     AllowedAudiences = new[] { audienceId },
                     IssuerSecurityTokenProviders = new IIssuerSecurityTokenProvider[]
                     {
-                        new SymmetricKeyIssuerSecurityTokenProvider(issuer, audienceSecret)
+                        new SymmetricKeyIssuerSecurityTokenProvider(ConfigurationManager.AppSettings["as:Issuer"], audienceSecret)
                     }
                 });
         }
