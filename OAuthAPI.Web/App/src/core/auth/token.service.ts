@@ -10,10 +10,10 @@ import { LoginModel } from '../../+auth/models/login-model';
 import { Storage } from "../storage";
 import { Tokens } from '../models/tokens';
 import { AlertService } from '../services/alert.service';
-import { AuthActions } from './auth.store';
-import { TokenActions } from './token.store';
-import { ProfileActions } from '../profile/profile.store';
 import {JwtHelper} from 'angular2-jwt';
+import {AuthActions} from '../stores/auth.store';
+import {TokenActions} from '../stores/token.store';
+import {ProfileActions} from '../stores/profile.store';
 
 @Injectable()
 export class TokenService {

@@ -1,6 +1,3 @@
-/**
- * Created by Fabian on 26/10/2016.
- */
 import {Http, RequestOptions} from "@angular/http";
 import {AuthConfig, AuthHttp} from "angular2-jwt";
 
