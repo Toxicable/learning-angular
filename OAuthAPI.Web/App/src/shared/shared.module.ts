@@ -9,6 +9,7 @@ import {LoadingBarComponent} from "./loading-bar/loading-bar.component";
 import {FileUploadComponent} from "./file-upload/file-upload.component";
 import {DefaultValuePipe} from "./pipes/default-value/default-value.pipe";
 import {MaterialModule} from '@angular/material';
+import {RxContextDirective} from './directives/rx-context.directive';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import {MaterialModule} from '@angular/material';
         AlertComponent,
         ControlMessagesComponent,
         ValidationSummaryComponent,
-        FileUploadComponent
+        FileUploadComponent,
+        RxContextDirective
     ],
     exports: [
         MaterialModule,

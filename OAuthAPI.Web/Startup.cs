@@ -43,9 +43,9 @@ namespace OAuthAPI.WebApi
 
             app.UseStaticFiles();
         }
-        
+
         private void ConfigureOAuthTokenGeneration(IAppBuilder app)
-        {
+        {            
             // Configure the db context and user manager to use a single instance per request
             app.CreatePerOwinContext(ApplicationDbContext.Create);
             app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
@@ -56,7 +56,7 @@ namespace OAuthAPI.WebApi
                 //For Dev enviroment only (on production should be AllowInsecureHttp = false)
                 AllowInsecureHttp = true,
                 TokenEndpointPath = new PathString("/api/token"),
-                AccessTokenExpireTimeSpan = TimeSpan.FromMinutes(1),
+                AccessTokenExpireTimeSpan = TimeSpan.FromMinutes(double.Parse(ConfigurationManager.AppSettings["as:AccessTokenExpireTimeSpanMinutes"])),
                 Provider = new OAuthProvider(),
                 AccessTokenFormat = new CustomJwtFormat(ConfigurationManager.AppSettings["as:Issuer"]),
                 RefreshTokenProvider = new RefreshTokenProvider()

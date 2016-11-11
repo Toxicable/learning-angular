@@ -17,6 +17,8 @@ namespace OAuthAPI.Data.Identity
         [Required]
         public string ProviderId { get; set; }
 
+        public DateTimeOffset AddedAt { get; set; }
+
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
     }

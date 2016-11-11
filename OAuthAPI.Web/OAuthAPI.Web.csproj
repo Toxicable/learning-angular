@@ -224,6 +224,7 @@
     <Compile Include="Api\Identity\Managers\RefreshTokenManager.cs" />
     <Compile Include="Api\Identity\Models\BindingModels\AccountBindingModels.cs" />
     <Compile Include="Api\Identity\Models\BindingModels\ClaimBindingModel.cs" />
+    <Compile Include="Api\Identity\Models\BindingModels\CreateExternalBindingModel.cs" />
     <Compile Include="Api\Identity\Models\BindingModels\ResetPasswordBindingModel.cs" />
     <Compile Include="Api\Identity\Models\BindingModels\RoleBindingModels.cs" />
     <Compile Include="Api\Identity\Models\BindingModels\SendForgotPasswordBindingModel.cs" />

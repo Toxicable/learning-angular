@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "exports": {
+    "OAuthAPI.Data/1.0.0": {
+      "type": "project",
+      "framework": ".NETFramework,Version=v4.5",
+      "compile": {
+        "bin/Debug/OAuthAPI.Data.dll": {}
+      },
+      "runtime": {
+        "../packages/EntityFramework.6.1.0/lib/net45/EntityFramework.SqlServer.dll": {},
+        "../packages/EntityFramework.6.1.0/lib/net45/EntityFramework.dll": {},
+        "../packages/Microsoft.AspNet.Identity.Core.2.2.1/lib/net45/Microsoft.AspNet.Identity.Core.dll": {},
+        "../packages/Microsoft.AspNet.Identity.EntityFramework.2.2.1/lib/net45/Microsoft.AspNet.Identity.EntityFramework.dll": {},
+        "bin/Debug/OAuthAPI.Data.dll": {}
+      },
+      "contentFiles": {
+        "bin/Debug/OAuthAPI.Data.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
+        }
+      }
+    }
+  }
+}

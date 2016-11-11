@@ -7,12 +7,14 @@ using OAuthAPI.Data;
 using OAuthAPI.Data.Identity;
 using OAuthAPI.WebApi.Api.Services;
 using System.Threading.Tasks;
+using System.Linq;
+using System.Web;
 
 namespace OAuthAPI.WebApi.Api.Identity.Managers
 {
     public class ApplicationUserManager : UserManager<ApplicationUser>
     {
-        private ApplicationDbContext _context { get; set; }
+        private ApplicationDbContext _context { get { return HttpContext.Current.GetOwinContext().Get<ApplicationDbContext>(); } }
         public ApplicationUserManager(IUserStore<ApplicationUser> store)
             : base(store)
         {
@@ -21,13 +23,22 @@ namespace OAuthAPI.WebApi.Api.Identity.Managers
         public async Task<bool> AddExternalLogin(ExternalAccount externalAccount, ApplicationUser user)
         {
             externalAccount.Id = Guid.NewGuid().ToString();
+            externalAccount.AddedAt = DateTimeOffset.Now;
 
-            user.ExternalAccount.Add(externalAccount);
+            user.ExternalAccounts.Add(externalAccount);
 
             await _context.SaveChangesAsync();
 
+            //TODO: add Identity result
             return true;
         } 
+
+        public async Task<ApplicationUser> FindByExternal(string email, string provider)
+        {
+            var user = Users.FirstOrDefault(u => u.UserName == email && u.ExternalAccounts.Any(x => x.Provider == provider));
+
+            return user;
+        }
        
 
         public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context)

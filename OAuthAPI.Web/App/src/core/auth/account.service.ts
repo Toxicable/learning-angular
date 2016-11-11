@@ -12,6 +12,7 @@ import {ChangePasswordModel} from '../models/change-password';
 import {ResetPasswordModel} from '../models/reser-password.model';
 import {TokenActions} from '../stores/token.store';
 import {ProfileActions} from '../stores/profile.store';
+import {ExternalRegistrationModel} from '../models/external-registration-model';
 
 @Injectable()
 export class AccountService {
@@ -28,7 +29,11 @@ export class AccountService {
 
     register(data: RegisterModel): Observable<Response> {
         return this.http.post("api/account/create", data)
-            .map(res => res)
+            .catch( this.httpExceptions.handleError )
+    }
+
+    externalRegister(model: ExternalRegistrationModel){
+        return this.http.post('/api/account/CreateExternal', model)
             .catch( this.httpExceptions.handleError )
     }
 

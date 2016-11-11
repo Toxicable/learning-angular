@@ -10,6 +10,10 @@ using OpenIddict;
 using AspNet.Security.OpenIdConnect.Server;
 using Microsoft.AspNetCore.Http.Authentication;
 using System.Security.Claims;
+using Microsoft.Extensions.Configuration;
+using System.Net.Http;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,12 +24,16 @@ namespace OAuthApi.AuthServer.Controllers
         private readonly OpenIddictApplicationManager<OpenIddictApplication> _applicationManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IConfiguration _configuration;
 
         public AuthorizationController(
             OpenIddictApplicationManager<OpenIddictApplication> applicationManager,
             SignInManager<ApplicationUser> signInManager,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            IConfiguration configuration
+            )
         {
+            _configuration = configuration;
             _applicationManager = applicationManager;
             _signInManager = signInManager;
             _userManager = userManager;
@@ -102,7 +110,7 @@ namespace OAuthApi.AuthServer.Controllers
                 return SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
             }
 
-            else if (request.GrantType == "urn:ietf:params:oauth:grant-type:google_identity_token")
+            else if (request.GrantType == "urn:ietf:params:oauth:grant-type:facebook_identity_token")
             {
                 // Reject the request if the "assertion" parameter is missing.
                 if (string.IsNullOrEmpty(request.Assertion))
@@ -113,24 +121,42 @@ namespace OAuthApi.AuthServer.Controllers
                         ErrorDescription = "The mandatory 'assertion' parameter was missing."
                     });
                 }
+                var username = "";
+
+                await VerifyExternalAccessToken( request.Assertion, "facebook");
+                //get username from external provider
+                //make sure it matches up
+
+                var user = await  _userManager.FindByEmailAsync(username);
+                
+                if(user == null)
+                {
+                    return BadRequest(new OpenIdConnectResponse
+                    {
+                        Error = OpenIdConnectConstants.Errors.InvalidGrant,
+                        ErrorDescription = "The user does not exist"
+                    });
+                }
+
+                var ticket = await CreateTicketAsync(request, user);
 
                 // Create a new ClaimsIdentity containing the claims that
                 // will be used to create an id_token and/or an access token.
-                var identity = new ClaimsIdentity(OpenIdConnectServerDefaults.AuthenticationScheme);
+                //var identity = new ClaimsIdentity(OpenIdConnectServerDefaults.AuthenticationScheme);
 
                 // Manually validate the identity token issued by Google,
                 // including the issuer, the signature and the audience.
                 // Then, copy the claims you need to the "identity" instance.
 
                 // Create a new authentication ticket holding the user identity.
-                var ticket = new AuthenticationTicket(
-                    new ClaimsPrincipal(identity),
-                    new AuthenticationProperties(),
-                    OpenIdConnectServerDefaults.AuthenticationScheme);
+                //var ticket = new AuthenticationTicket(
+                //    new ClaimsPrincipal(identity),
+                //    new AuthenticationProperties(),
+                //    OpenIdConnectServerDefaults.AuthenticationScheme);
 
-                ticket.SetScopes(
-                    OpenIdConnectConstants.Scopes.OpenId,
-                    OpenIdConnectConstants.Scopes.OfflineAccess);
+                //ticket.SetScopes(
+                //    OpenIdConnectConstants.Scopes.OpenId,
+                //    OpenIdConnectConstants.Scopes.OfflineAccess);
 
                 return SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
             }
@@ -141,6 +167,63 @@ namespace OAuthApi.AuthServer.Controllers
                 Error = OpenIdConnectConstants.Errors.UnsupportedGrantType,
                 ErrorDescription = "The specified grant type is not supported."
             });
+        }
+
+        private async Task<bool> VerifyExternalAccessToken(string accessToken, string provider)
+        {
+            var verifyEndpoint = string.Empty;
+
+            if (provider == "facebook")
+            {
+                var appToken = _configuration["Authentication:External:Facebook:apptoken"] ?? "1841204649444154|vAuk5P5YomtABVYDfOl12PmFcUs";
+                verifyEndpoint = $"https://graph.facebook.com/debug_token?input_token={ accessToken }&access_token={ appToken }";
+            }
+
+            if (provider == "google")
+            {
+                verifyEndpoint = $"https://www.googleapis.com/oauth2/v3/tokeninfo?access_token={ accessToken }";
+            }
+
+            if (string.IsNullOrWhiteSpace(verifyEndpoint))
+            {
+                ModelState.AddModelError("", "Provider not supported");
+            }
+
+            var client = new HttpClient();
+            var uri = new Uri(verifyEndpoint);
+            var response = await client.GetAsync(uri);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+
+                //TODO: find if i can stringly type this
+                dynamic jObj = (JObject)JsonConvert.DeserializeObject(content);
+
+                string tokenAppId = "";
+
+                if (provider == "facebook")
+                {
+                    var result = JsonConvert.DeserializeObject<FacebookDebugTokenBindingModel>(content);
+                    
+                    if (!_configuration["Authentication:External:Facebook:appid"].Equals(result.Data.App_Id.ToString(), StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
+
+                }
+                else if (provider == "google")
+                {
+                    //TODO: create stringly typed model for this
+                    tokenAppId = jObj["audience"];
+                    if (!_configuration["Authentication:External:Google:clientid"].Equals(tokenAppId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
         private async Task<AuthenticationTicket> CreateTicketAsync(OpenIdConnectRequest request, ApplicationUser user)

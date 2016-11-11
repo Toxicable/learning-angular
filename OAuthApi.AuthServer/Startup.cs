@@ -31,6 +31,9 @@ namespace OAuthApi.AuthServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //TODO: stringly ttype this
+            services.AddSingleton<IConfiguration>(Configuration);
+
             services.AddMvc();
 
             services.AddEntityFramework()
@@ -56,7 +59,6 @@ namespace OAuthApi.AuthServer
                 // Enable the password and the refresh token flows.
                 .AllowPasswordFlow()
                 .AllowRefreshTokenFlow()                                   //or should this just be external then check in the controller
-                .AllowCustomFlow("urn:ietf:params:oauth:grant-type:google_identity_token")
                 .AllowCustomFlow("urn:ietf:params:oauth:grant-type:facebook_identity_token")
                 // During development, you can disable the HTTPS requirement.
                 .DisableHttpsRequirement()
@@ -89,7 +91,7 @@ namespace OAuthApi.AuthServer
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-              app.UseDeveloperExceptionPage();
+            app.UseDeveloperExceptionPage();
 
             // Add a middleware used to validate access
             // tokens and protect the API endpoints.

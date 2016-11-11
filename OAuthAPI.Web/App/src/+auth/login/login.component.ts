@@ -4,8 +4,6 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {FormValidationService} from "../../core/services/form-validation.service";
 import {AccountService} from '../../core/auth/account.service';
 import {AlertService} from '../../core/services/alert.service';
-import {FacebookAuthService} from '../../core/auth/providers/facebook.service';
-import {GoogleAuthService} from '../../core/auth/providers/google.service';
 import {ExternalAuthService} from '../../core/auth/external-auth.service';
 
 @Component({

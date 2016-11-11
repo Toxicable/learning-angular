@@ -22,6 +22,8 @@ using OAuthAPI.WebApi.Api.Identity.Models.BindingModels;
 using OAuthAPI.WebApi.Api.Identity.Models.ViewModels;
 using OAuthAPI.WebApi.Api.Results;
 using SendGrid;
+using System.Configuration;
+using OAuthAPI.WebApi.Api.Identity.Providers;
 
 namespace OAuthAPI.WebApi.Api.Identity.Controllers
 {
@@ -64,6 +66,179 @@ namespace OAuthAPI.WebApi.Api.Identity.Controllers
 
             //return Created(locationHeader, _mapper.Map<UserViewModel>(user));
             return Ok();
+        }
+
+        //GET: api/account/CreateExternal
+        [HttpPost, AllowAnonymous]
+        public async Task<IHttpActionResult> CreateExternal(CreateExternalBindingModel createExternalModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if(! await VerifyExternalAccessToken(createExternalModel.AccessToken, createExternalModel.Provider))
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = new ApplicationUser()
+            {
+                UserName = createExternalModel.Email,
+                Email = createExternalModel.Email,
+                AccountCreated = DateTimeOffset.Now
+            };
+
+            IdentityResult addUserResult = await AppUserManager.CreateAsync(user);
+
+            if (!addUserResult.Succeeded)
+            {
+                return GetIdentityErrorResult(addUserResult);
+            }
+
+            var externalAccount = new ExternalAccount()
+            {
+                Provider = createExternalModel.Provider,
+                ProviderId = createExternalModel.ProviderId
+            };
+
+            await AppUserManager.AddExternalLogin(externalAccount, user);
+            
+            return Ok();
+
+        }
+
+        private async Task<bool> VerifyExternalAccessToken(string accessToken, string provider)
+        {
+            var verifyEndpoint = string.Empty;
+
+            if (provider == "facebook")
+            {
+                var appToken = ConfigurationManager.AppSettings["external:facebook:apptoken"];
+                verifyEndpoint = $"https://graph.facebook.com/debug_token?input_token={ accessToken }&access_token={ appToken }";
+            }
+
+            if (provider == "google")
+            {
+                verifyEndpoint = $"https://www.googleapis.com/oauth2/v3/tokeninfo?access_token={ accessToken }";
+            }
+
+            if (string.IsNullOrWhiteSpace(verifyEndpoint))
+            {
+                ModelState.AddModelError("", "Provider not supported");
+            }
+
+            var client = new HttpClient();
+            var uri = new Uri(verifyEndpoint);
+            var response = await client.GetAsync(uri);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var userEmail = "";
+
+                var content = await response.Content.ReadAsStringAsync();
+
+                dynamic jObj = (JObject)Newtonsoft.Json.JsonConvert.DeserializeObject(content);
+
+                string tokenAppId = "";
+
+                if (provider == "facebook")
+                {
+                    tokenAppId = jObj["data"]["app_id"]; 
+                    if(!ConfigurationManager.AppSettings["external:facebook:appid"].Equals(tokenAppId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
+
+                    var userInfoUrl = $"https://graph.facebook.com/v2.8/me?fields=email,first_name,last_name&access_token={ accessToken }";
+                    var userInfoUri = new Uri(userInfoUrl);
+                    var userInfoResponse = await client.GetAsync(userInfoUri);
+
+                    //TODO: get the users details then put it in a class and return it or something
+                }
+                else if (provider == "google")
+                {
+                    tokenAppId = jObj["audience"];
+                    if(!ConfigurationManager.AppSettings["external:facebook:clientid"].Equals(tokenAppId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
+                }   
+            }
+
+            return true;
+        }
+
+        public async Task<IHttpActionResult> LoginExternal(string provider, string externalAccessToken, string email)
+        {
+
+            if (string.IsNullOrWhiteSpace(provider) || string.IsNullOrWhiteSpace(externalAccessToken))
+            {
+                ModelState.AddModelError("", "Provider or external access token is not sent");
+                return BadRequest(ModelState);
+            }
+
+            var verifiedAccessToken = await VerifyExternalAccessToken(provider, externalAccessToken);
+            if (!verifiedAccessToken)
+            {
+                ModelState.AddModelError("","Invalid Provider or External Access Token");
+                return BadRequest(ModelState);
+            }
+
+            IdentityUser user = await AppUserManager.FindByExternal(email, provider);
+            
+
+            if (user == null)
+            {
+                ModelState.AddModelError("", "External user is not registered");
+                return BadRequest(ModelState);
+            }
+
+            //generate access token response
+            var accessTokenResponse = GenerateLocalAccessTokenResponse(user.UserName);
+
+            return Ok(accessTokenResponse);
+
+        }
+
+        private async Task<JObject> GenerateLocalAccessTokenResponse(string userName)
+        {
+
+            ApplicationUser user = await AppUserManager.FindByEmailAsync(userName);
+
+            if (user == null)
+            {
+                ModelState.AddModelError("", "The user name or password is incorrect.");
+                return null;
+            }
+
+
+            ClaimsIdentity identity = await user.GenerateUserIdentityAsync(AppUserManager, "JWT");
+
+            var tokenExpiration = TimeSpan.FromMinutes(double.Parse(ConfigurationManager.AppSettings["as:AccessTokenExpireTimeSpanMinutes"]));
+            var props = new AuthenticationProperties()
+            {
+                IssuedUtc = DateTime.UtcNow,
+                ExpiresUtc = DateTime.UtcNow.Add(tokenExpiration),
+            };
+
+            var ticket = new AuthenticationTicket(identity, props);
+
+
+            var jwtFormatter = new CustomJwtFormat(ConfigurationManager.AppSettings["as:Issuer"]);
+            var accessToken = jwtFormatter.Protect(ticket);
+
+
+            JObject tokenResponse = new JObject(
+                                        new JProperty("userName", userName),
+                                        new JProperty("access_token", accessToken),
+                                        new JProperty("token_type", "bearer"),
+                                        new JProperty("expires_in", tokenExpiration.TotalSeconds.ToString()),
+                                        new JProperty(".issued", ticket.Properties.IssuedUtc.ToString()),
+                                        new JProperty(".expires", ticket.Properties.ExpiresUtc.ToString())
+        );
+
+            return tokenResponse;
         }
 
         //GET: api/account/SendConfirmEmail

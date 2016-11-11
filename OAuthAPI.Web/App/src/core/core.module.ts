@@ -2,7 +2,7 @@ import {NgModule, Optional, SkipSelf} from "@angular/core";
 import {SuperAdminAuthGuard} from "./guards/super-admin-auth-guard.service";
 import {AuthenticatedAuthGuard} from "./guards/authenticated-auth-guard.service";
 import {Title} from "@angular/platform-browser";
-import {LocalStorageBackend, Storage} from "./storage";
+import {LocalStorageBackend, Storage, StorageBackend} from "./storage";
 import {authProvider} from "./auth-factory";
 import {LoadingBarService} from "./services/loading-bar.service";
 import {AlertService} from "./services/alert.service";
@@ -15,7 +15,7 @@ import {TokenService} from './auth/token.service';
 import {AccountService} from './auth/account.service';
 import {AuthActions} from './stores/auth.store';
 import {ProfileActions} from './stores/profile.store';
-import {Logger, ConsoleLoggerBackend} from './logger';
+import {Logger, ConsoleLoggerBackend, LoggingBackend} from './logger';
 import {TokenActions} from './stores/token.store';
 import {ExternalAuthService} from './auth/external-auth.service';
 
@@ -34,15 +34,16 @@ import {ExternalAuthService} from './auth/external-auth.service';
         AuthGuard,
         TokenService,
         AccountService,
+        ExternalAuthService,
 
         AuthActions,
         TokenActions,
         ProfileActions,
 
-        ExternalAuthService,
-
-        { provide: Storage, useClass: LocalStorageBackend },
-        //{ provide: Logger, useClass: ConsoleLoggerBackend },
+        { provide: StorageBackend, useClass: LocalStorageBackend },
+        { provide: LoggingBackend, useClass: ConsoleLoggerBackend },
+        Logger,
+        Storage,
         authProvider
     ]
 

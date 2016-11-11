@@ -17,6 +17,10 @@ export class AccountComponent implements OnInit {
                 private alert: AlertService
     ) { }
 
+
+
+    
+
     resetPasswordForm: FormGroup;
     errors: string[];
 

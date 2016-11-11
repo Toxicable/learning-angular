@@ -13,7 +13,7 @@ namespace OAuthAPI.Data.Identity
     {
         public ApplicationUser()
         {
-            ExternalAccount = new HashSet<ExternalAccount>();
+            ExternalAccounts = new HashSet<ExternalAccount>();
         }
 
         [Required]
@@ -22,7 +22,7 @@ namespace OAuthAPI.Data.Identity
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
-        public ICollection<ExternalAccount> ExternalAccount { get; set; }
+        public ICollection<ExternalAccount> ExternalAccounts { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager, string authenticationType)
         {
