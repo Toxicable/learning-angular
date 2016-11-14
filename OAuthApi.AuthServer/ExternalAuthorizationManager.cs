@@ -13,7 +13,7 @@ namespace OAuthApi.AuthServer
     public interface IExternalAuthorizationManager
     {
         Task<ExternalProfileBindingModel> GetProfile(string accessToken, ExternalAuthProviders provider);
-        Task<bool> VerifyExternalAccessToken(string accessToken, string provider);
+        Task<bool> VerifyExternalAccessToken(string accessToken, ExternalAuthProviders provider);
     }
 
     public enum ExternalAuthProviders
@@ -54,8 +54,22 @@ namespace OAuthApi.AuthServer
 
             if (provider == ExternalAuthProviders.google)
             {
+                var url = $"https://graph.facebook.com/me?fields=email,first_name,last_name&access_token={ accessToken }";
+                var client = new HttpClient();
+                var uri = new Uri(url);
+                var response = await client.GetAsync(uri);
 
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+
+                    var profile = JsonConvert.DeserializeObject<ExternalProfileBindingModel>(content);
+                    return profile;
+                }
+                return null;
             }
+
+            return null;
 
 
         }
@@ -107,9 +121,11 @@ namespace OAuthApi.AuthServer
                         return false;
                     }
                 }
+                return true;
             }
 
-            return true;
+            //request failed so something probably wrong with the token
+            return false;
         }
     }
 }
