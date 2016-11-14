@@ -5,7 +5,7 @@ import {AlertService} from "../../core/services/alert.service";
 import {Http} from "@angular/http";
 import {FormGroup, FormBuilder, Validators} from "@angular/forms";
 import {FormValidationService} from "../../core/services/form-validation.service";
-import {AccountService} from '../../core/auth/account.service';
+import { AccountService } from '../../core/account/account.service';
 
 @Component({
     selector: 'reset-password',

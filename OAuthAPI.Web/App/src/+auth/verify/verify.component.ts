@@ -7,7 +7,7 @@ import {LoadingBarService} from "../../core/services/loading-bar.service";
 import {AuthHttp} from "angular2-jwt";
 import {AppState} from '../../app/app-store';
 import {Store} from '@ngrx/store';
-import {TokenService} from '../../core/auth/token.service';
+import { AuthTokenService } from '../../core/auth-token/auth-token.service';
 
 @Component({
     selector: 'verify',
@@ -20,7 +20,7 @@ export class VerifyComponent implements OnInit{
                 private route: ActivatedRoute,
                 private http: Http,
                 private loadingBar: LoadingBarService,
-                private tokens: TokenService,
+                private tokens: AuthTokenService,
                 private store: Store<AppState>
     ){}
     ngOnInit(): void {

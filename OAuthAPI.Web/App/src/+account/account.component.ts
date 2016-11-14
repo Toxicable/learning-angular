@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {ProfileService} from "../core/profile/profile.service";
 import {FormGroup, FormBuilder, Validators} from "@angular/forms";
 import {FormValidationService} from "../core/services/form-validation.service";
-import {AccountService} from '../core/auth/account.service';
 import {AlertService} from '../core/services/alert.service';
+import { AccountService } from '../core/account/account.service';
 
 @Component({
     selector: 'account',
@@ -16,11 +16,7 @@ export class AccountComponent implements OnInit {
                 private account: AccountService,
                 private alert: AlertService
     ) { }
-
-
-
     
-
     resetPasswordForm: FormGroup;
     errors: string[];
 
