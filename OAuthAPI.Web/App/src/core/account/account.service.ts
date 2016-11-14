@@ -5,14 +5,18 @@ import {Response, Http} from '@angular/http';
 import {LoadingBarService} from '../services/loading-bar.service';
 import {HttpExceptionService} from '../services/http-exceptions.service';
 import {LoginModel} from '../../+auth/models/login-model';
-import {TokenService} from './token.service';
 import {AuthApiService} from '../services/auth-api.service';
 import {AuthActions} from '../stores/auth.store';
 import {ChangePasswordModel} from '../models/change-password';
 import {ResetPasswordModel} from '../models/reser-password.model';
-import {TokenActions} from '../stores/token.store';
 import {ProfileActions} from '../stores/profile.store';
 import {ExternalRegistrationModel} from '../models/external-registration-model';
+import { ExternalLoginModel } from '../models/external-login-model';
+import { AuthTokenModel } from '../models/auth-tokens.model';
+import { AuthTokenService } from '../auth-token/auth-token.service';
+import * as authTokenActions from '../auth-token/auth-token.actions'
+import { Store, StoreModule } from '@ngrx/store';
+import { AppState } from '../../app/app-store';
 
 @Injectable()
 export class AccountService {
@@ -20,12 +24,13 @@ export class AccountService {
     constructor(private loadingBar: LoadingBarService,
                 private http: Http,
                 private httpExceptions: HttpExceptionService,
-                private tokens: TokenService,
                 private authApi: AuthApiService,
                 private authActions: AuthActions,
-                private tokenActions: TokenActions,
-                private profileActions: ProfileActions
+                private profileActions: ProfileActions,
+                private authTokens: AuthTokenService,
+                private store: Store<AppState>
     ) { }
+
 
     register(data: RegisterModel): Observable<Response> {
         return this.http.post("api/account/create", data)
@@ -37,9 +42,14 @@ export class AccountService {
         return this.http.post('/api/account/registerexternal', model)
     }
 
+    externalLogin(model: ExternalLoginModel){
+        return this.authTokens.getTokens(model, "urn:ietf:params:oauth:grant-type:external_identity_token");
+        
+    }
+
     login(user: LoginModel)  {
-        return this.tokens.getTokens(user, "password")
-            .do(res => this.tokens.scheduleRefresh() )
+        return this.authTokens.getTokens(user, "password")
+            .do(res => this.authTokens.scheduleRefresh() )
     }
 
     sendForgotPassword( data ){
@@ -56,11 +66,11 @@ export class AccountService {
     }
 
     logout(){
-        this.tokens.deleteTokens();
-        this.tokens.unsubscribeRefresh();
+        this.authTokens.deleteTokens();
+        this.authTokens.unsubscribeRefresh();
 
         this.authActions.isNotLoggedIn();
-        this.tokenActions.deleteTokens();
+        this.store.dispatch(new authTokenActions.DeleteAction());
         this.profileActions.deleteProfile();
     }
 

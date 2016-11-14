@@ -2,9 +2,9 @@ import { Component } from '@angular/core'
 import { OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {FormValidationService} from "../../core/services/form-validation.service";
-import {AccountService} from '../../core/auth/account.service';
 import {AlertService} from '../../core/services/alert.service';
 import {ExternalAuthService} from '../../core/auth/external-auth.service';
+import { AccountService } from '../../core/account/account.service';
 
 @Component({
     selector: 'login',
@@ -42,14 +42,14 @@ export class LoginComponent implements OnInit{
     }
 
     facebookAuthorize(){
-        this.externalAuth.authorizeFacebook()
+        this.externalAuth.login("Facebook")
         .subscribe( x => {
                 this.alert.sendSuccess("Successfully registered");
             })
     }
 
     googleAuthorize(){
-        this.externalAuth.authorizeGoogle()
+        this.externalAuth.login("Google")
             .subscribe( x => {
                 this.alert.sendSuccess("Successfully registered");
             })

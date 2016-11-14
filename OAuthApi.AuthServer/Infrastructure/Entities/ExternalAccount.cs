@@ -11,7 +11,7 @@ namespace OAuthApi.AuthServer.Infrastructure.Entities
         public string Id { get; set; }
 
         [Required]
-        public string Provider { get; set; }
+        public ExternalAuthProviders Provider { get; set; }
 
         [Required]
         public string ProviderUserId { get; set; }

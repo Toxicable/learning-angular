@@ -74,8 +74,18 @@ namespace OAuthApi.AuthServer.Controllers
 
                 var profile = await _externalAuthManager.GetProfile(model.AccessToken, model.Provider);
 
-                var user = new ApplicationUser { UserName = profile.email, Email = profile.email };
-                var externalAccount = new ExternalAccount() { AddedAt = DateTimeOffset.Now, Provider = model.Provider, ProviderUserId = profile.id };
+                var user = new ApplicationUser {
+                    UserName = profile.email,
+                    Email = profile.email,
+                    FirstName = profile.first_name,
+                    LastName = profile.last_name
+                };
+                var externalAccount = new ExternalAccount() {
+                    Id = Guid.NewGuid().ToString(),
+                    AddedAt = DateTimeOffset.Now,
+                    Provider = model.Provider,
+                    ProviderUserId = profile.id
+                };
                 user.ExternalAccounts.Add(externalAccount);
 
                 var result = await _userManager.CreateAsync(user);

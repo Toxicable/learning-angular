@@ -18,8 +18,8 @@ namespace OAuthApi.AuthServer
 
     public enum ExternalAuthProviders
     {
-        facebook,
-        google
+        Facebook,
+        Google
     }
 
     public class ExternalAuthorizationManager : IExternalAuthorizationManager
@@ -35,7 +35,7 @@ namespace OAuthApi.AuthServer
 
         public async Task<ExternalProfileBindingModel> GetProfile(string accessToken, ExternalAuthProviders provider)
         {
-            if(provider == ExternalAuthProviders.facebook)
+            if(provider == ExternalAuthProviders.Facebook)
             {
                 var url = $"https://graph.facebook.com/me?fields=email,first_name,last_name&access_token={ accessToken }";
                 var client = new HttpClient();
@@ -52,9 +52,9 @@ namespace OAuthApi.AuthServer
                 return null;
             }
 
-            if (provider == ExternalAuthProviders.google)
+            if (provider == ExternalAuthProviders.Google)
             {
-                var url = $"https://graph.facebook.com/me?fields=email,first_name,last_name&access_token={ accessToken }";
+                var url = $"https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token={ accessToken }";
                 var client = new HttpClient();
                 var uri = new Uri(url);
                 var response = await client.GetAsync(uri);
@@ -64,6 +64,10 @@ namespace OAuthApi.AuthServer
                     var content = await response.Content.ReadAsStringAsync();
 
                     var profile = JsonConvert.DeserializeObject<ExternalProfileBindingModel>(content);
+
+                    //just ot make it easier for the method that calls this object
+                    profile.first_name = profile.given_name;
+                    profile.last_name = profile.last_name;
                     return profile;
                 }
                 return null;
@@ -78,13 +82,13 @@ namespace OAuthApi.AuthServer
         {
             var verifyEndpoint = string.Empty;
 
-            if (provider == ExternalAuthProviders.facebook)
+            if (provider == ExternalAuthProviders.Facebook)
             {
                 var appToken = _configuration["Authentication:External:Facebook:apptoken"];
                 verifyEndpoint = $"https://graph.facebook.com/debug_token?input_token={ accessToken }&access_token={ appToken }";
             }
 
-            if (provider == ExternalAuthProviders.google)
+            if (provider == ExternalAuthProviders.Google)
             {
                 verifyEndpoint = $"https://www.googleapis.com/oauth2/v3/tokeninfo?access_token={ accessToken }";
             }
@@ -102,7 +106,7 @@ namespace OAuthApi.AuthServer
             {
                 var content = await response.Content.ReadAsStringAsync();             
 
-                if (provider == ExternalAuthProviders.facebook)
+                if (provider == ExternalAuthProviders.Facebook)
                 {
                     var result = JsonConvert.DeserializeObject<FacebookDebugTokenBindingModel>(content);
 
@@ -112,10 +116,10 @@ namespace OAuthApi.AuthServer
                     }
 
                 }
-                else if (provider == ExternalAuthProviders.google)
+                else if (provider == ExternalAuthProviders.Google)
                 {
                     var result = JsonConvert.DeserializeObject<GoogleTokenInfoBindingModel>(content);
-
+                    
                     if (!_configuration["Authentication:External:Google:clientid"].Equals(result.azp, StringComparison.OrdinalIgnoreCase))
                     {
                         return false;

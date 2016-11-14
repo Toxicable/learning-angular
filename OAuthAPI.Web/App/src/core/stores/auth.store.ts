@@ -1,13 +1,13 @@
 import {ActionReducer, Action, Store, combineReducers} from '@ngrx/store';
 import {ProfileModel} from '../models/profile-model';
-import {Tokens} from '../models/tokens';
 import {Injectable} from '@angular/core';
 import {AppState} from '../../app/app-store';
 import {profileReducer} from './profile.store';
-import {tokensReducer} from './token.store';
+import { AuthTokenModel } from '../models/auth-tokens.model';
+import * as authTokenReducer from '../auth-token/auth-token.reducer'
 
 export interface Auth{
-    tokens: Tokens,
+    authTokens: AuthTokenModel,
     profile: ProfileModel,
     loggedIn: boolean,
     authReady: boolean
@@ -51,7 +51,7 @@ const authReadyReducer: ActionReducer<boolean> = (state = false, action: Action)
 
 export const authReducer: ActionReducer<Auth> = combineReducers({
     profile: profileReducer,
-    tokens: tokensReducer,
+    tokens: authTokenReducer.reducer,
     loggedIn: loggedInReducer,
     authReady: authReadyReducer
 });

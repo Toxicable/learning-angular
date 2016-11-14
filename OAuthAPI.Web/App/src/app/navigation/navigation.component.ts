@@ -3,7 +3,7 @@ import {ProfileService} from "../../core/profile/profile.service";
 import {AppState} from '../app-store';
 import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
-import {AccountService} from '../../core/auth/account.service';
+import { AccountService } from '../../core/account/account.service';
 
 @Component({
     selector: 'navigation',

@@ -1,9 +1,9 @@
 ﻿import {Component, ViewEncapsulation, OnInit, OnDestroy} from '@angular/core'
 import {Store} from '@ngrx/store';
 import {AppState} from './app-store';
-import {TokenService} from '../core/auth/token.service';
 import {AuthActions} from '../core/stores/auth.store';
 import {AlertService} from '../core/services/alert.service';
+import { AuthTokenService } from '../core/auth-token/auth-token.service';
 
 @Component({
     selector: 'my-app',
@@ -18,7 +18,7 @@ import {AlertService} from '../core/services/alert.service';
 })
 export class AppComponent implements OnInit, OnDestroy{
 
-    constructor(private tokens: TokenService,
+    constructor(private tokens: AuthTokenService,
                 private store: Store<AppState>,
                 private authActions: AuthActions,
                 private alert: AlertService

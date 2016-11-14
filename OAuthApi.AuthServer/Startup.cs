@@ -55,12 +55,12 @@ namespace OAuthApi.AuthServer
                 // bind OpenIdConnectRequest or OpenIdConnectResponse parameters.
                 .AddMvcBinders()
                 // Enable the token endpoint.
-                .EnableTokenEndpoint("/connect/token")
+                .EnableTokenEndpoint("/api/connect/token")
 
                 // Enable the password and the refresh token flows.
                 .AllowPasswordFlow()
                 .AllowRefreshTokenFlow()                                   //or should this just be external then check in the controller
-                .AllowCustomFlow("urn:ietf:params:oauth:grant-type:facebook_identity_token")
+                .AllowCustomFlow("urn:ietf:params:oauth:grant-type:external_identity_token")
                 // During development, you can disable the HTTPS requirement.
                 .DisableHttpsRequirement()
 

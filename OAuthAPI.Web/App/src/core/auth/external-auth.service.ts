@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Logger } from '../logger';
 import { ExternalRegistrationModel } from '../models/external-registration-model';
-import { AccountService } from './account.service';
 import * as appSettings from '../../app-settings';
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs'
+import { AccountService } from '../account/account.service';
 
 
 @Injectable()
@@ -25,18 +25,48 @@ export class ExternalAuthService {
             version    : 'v2.8' 
         });
 
-        gapi.load('auth', () => {
+        gapi.load('auth', () => {});
+    }
 
-            //gapi.auth.init()
+    register(provider: string){
+        let accessToken$: Observable<any>;
+        if(provider == "facebook"){
+            accessToken$ = this.authorizeFacebook();
+        }
+        if(provider == "google"){
+            accessToken$ = this.authorizeGoogle();
+        }
 
+        return accessToken$.flatMap((accessToken: string) => {
+            return this.account.externalRegister({
+                accessToken: accessToken,
+                provider,
+            })
+        })
+    }
+    
+    login(provider: string){
+        let accessToken$: Observable<any>;
+        if(provider == "Facebook"){
+            accessToken$ = this.authorizeFacebook();
+        }
+        if(provider == "Google"){
+            accessToken$ = this.authorizeGoogle();
+        }
+
+        return accessToken$.flatMap((accessToken: string)=>{
+            return this.account.externalLogin({
+                assertion: accessToken,
+                provider,
+            })
         })
     }
 
-    authorizeFacebook() {
-        let login:Observable<any> = Observable.create( (observer: Observer<any>) => {
+    private authorizeFacebook(): Observable<any> {
+        return Observable.create( (observer: Observer<any>) => {
             try{
                 FB.login(response => {
-                observer.next(response)
+                observer.next(response.authResponse.accessToken)
                 observer.complete
             },{scope: 'email'})
             }catch(error){
@@ -44,32 +74,21 @@ export class ExternalAuthService {
             }        
         });
 
-        return login.flatMap(response => {
-            return this.account.externalRegister({
-                accessToken: response.authResponse.accessToken,
-                provider: "facebook",
-            })
-        })
-
     }
 
-    authorizeGoogle() {
-        let login = Observable.create((observer: Observer<any>) => {
+    private authorizeGoogle(): Observable<any> {
+        return Observable.create((observer: Observer<any>) => {
             try{
                 gapi.auth.authorize({
                     client_id: appSettings.appSettings.auth.external.googleClientId,
                     scope: 'profile'
-                }, token => observer.next(token));
+                }, token => {
+                    observer.next(token.access_token)
+                    observer.complete()
+                });
             }catch(error){
                 observer.error(error);
             }
-        })
-
-         return  login.flatMap((response: any) => {
-            return this.account.externalRegister({
-                accessToken: response.access_token,
-                provider: "google",
-            })
-        })            
+        })          
     }
 }

@@ -8,15 +8,16 @@ import { Store } from '@ngrx/store';
 import { ProfileModel } from '../models/profile-model';
 import { LoginModel } from '../../+auth/models/login-model';
 import { Storage } from "../storage";
-import { Tokens } from '../models/tokens';
 import { AlertService } from '../services/alert.service';
-import {JwtHelper} from 'angular2-jwt';
-import {AuthActions} from '../stores/auth.store';
-import {TokenActions} from '../stores/token.store';
-import {ProfileActions} from '../stores/profile.store';
+import { JwtHelper } from 'angular2-jwt';
+import { AuthActions } from '../stores/auth.store';
+import { ProfileActions } from '../stores/profile.store';
+import { ExternalLoginModel } from '../models/external-login-model';
+import { AuthTokenModel } from '../models/auth-tokens.model';
+import * as authTokenActions from './auth-token.actions';
 
 @Injectable()
-export class TokenService {
+export class AuthTokenService {
     constructor(private storage: Storage,
                 private loadingBar: LoadingBarService,
                 private http: Http,
@@ -24,14 +25,13 @@ export class TokenService {
                 private store: Store<AppState>,
                 private alert: AlertService,
                 private authActions: AuthActions,
-                private tokenActions: TokenActions,
                 private profileActions: ProfileActions
     ) { }
 
     refreshSubscription$: Subscription;
     jwtHelper: JwtHelper = new JwtHelper();
 
-    getTokens(data: LoginModel | RefreshGrant, grantType: string): Observable<void> {
+    getTokens(data: LoginModel | RefreshGrant | ExternalLoginModel, grantType: string): Observable<void> {
         //data can be any since it can either be a refresh tokens or login details
         //The request for tokens must be x-www-form-urlencoded IE: parameter string, it cant be json
         let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded'});
@@ -39,19 +39,20 @@ export class TokenService {
 
         Object.assign(data, {
             grant_type: grantType,
-            client_id: "AngularApp"
+            scope: ["openid offline_access"]
         });
 
-        return this.http.post("api/token", this.encodeObjectToParams(data) , options)
+        return this.http.post("/api/connect/token", this.encodeObjectToParams(data) , options)
             .map( res => res.json())
-            .map( (tokens: Tokens) => {
-                this.tokenActions.setTokens(tokens);
+            .map( (tokens: AuthTokenModel) => {
+                this.store.dispatch(new authTokenActions.LoadAction(tokens))
+
                 this.authActions.isLoggedIn();
 
-                let profile = this.jwtHelper.decodeToken(tokens.access_token) as ProfileModel;
+                let profile = this.jwtHelper.decodeToken(tokens.id_token) as ProfileModel;
                 this.profileActions.storeProfile(profile);
 
-                this.storage.setItem("tokens", JSON.stringify(tokens));
+                this.storage.setItem("auth-tokens", JSON.stringify(tokens));
             })
             .do( _ => this.authActions.authReady())
             .catch( error => this.httpExceptions.handleTokenBadRequest(error));
@@ -59,8 +60,8 @@ export class TokenService {
     }
 
     deleteTokens(){
-        this.storage.removeItem("tokens");
-        this.tokenActions.deleteTokens();
+        this.storage.removeItem("auth-tokens");
+        this.store.dispatch(new authTokenActions.DeleteAction());
     }
 
     unsubscribeRefresh() {
@@ -70,7 +71,7 @@ export class TokenService {
     }
 
     refreshTokens(): Observable<Response>{
-        return this.store.map( state => state.auth.tokens.refresh_token)
+        return this.store.map( state => state.auth.authTokens.refresh_token)
             .first()
             .flatMap( refreshToken => {
                 return this.getTokens(
@@ -89,8 +90,8 @@ export class TokenService {
                     return Observable.throw("No token in Storage");
                 }
                 //parse the token into a model and throw it into the store
-                let tokens = JSON.parse(rawTokens) as Tokens;
-                this.tokenActions.setTokens(tokens);
+                let tokens = JSON.parse(rawTokens) as AuthTokenModel;
+                this.store.dispatch(new authTokenActions.LoadAction(tokens))
 
                 if(!this.jwtHelper.isTokenExpired(tokens.access_token)){
                     //grab the profile out so we can store it
@@ -108,7 +109,7 @@ export class TokenService {
     }
 
     scheduleRefresh(): void {
-        let source = this.store.select( state => state.auth.tokens)
+        let source = this.store.select( state => state.auth.authTokens)
             .take(1)
             .flatMap(tokens => {
                 //this is the other method for getting a refresh timer

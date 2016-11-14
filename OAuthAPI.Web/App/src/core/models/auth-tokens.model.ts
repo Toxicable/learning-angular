@@ -1,9 +1,7 @@
-export interface Tokens{
+export interface AuthTokenModel{
     access_token: string;
     refresh_token: string;
-    "as:client_id": string;
-    ".issued": string;
-    ".expires": string;
+    id_token: string;
     expires_in: number;
     token_type: string;
 }

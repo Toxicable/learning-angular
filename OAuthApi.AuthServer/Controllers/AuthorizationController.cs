@@ -42,7 +42,7 @@ namespace OAuthApi.AuthServer.Controllers
             _userManager = userManager;
         }
 
-        [HttpPost("~/connect/token"), Produces("application/json")]
+        [HttpPost("~/api/connect/token"), Produces("application/json")]
         public async Task<IActionResult> Exchange(OpenIdConnectRequest request)
         {
             if (request.IsPasswordGrantType())
@@ -113,7 +113,7 @@ namespace OAuthApi.AuthServer.Controllers
                 return SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
             }
 
-            else if (request.GrantType == "urn:ietf:params:oauth:grant-type:facebook_identity_token")
+            else if (request.GrantType == "urn:ietf:params:oauth:grant-type:external_identity_token")
             {
                 //Assertion should be the access_token
                 // Reject the request if the "assertion" parameter is missing.
@@ -126,7 +126,20 @@ namespace OAuthApi.AuthServer.Controllers
                     });
                 };
 
-                var isValid = await _externalAuthManager.VerifyExternalAccessToken( request.Assertion, "facebook");
+                ExternalAuthProviders provider;
+
+                var providerExists = Enum.TryParse(request["provider"].ToString(), out provider);
+
+                if (! providerExists)
+                {
+                    return BadRequest(new OpenIdConnectResponse
+                    {
+                        Error = OpenIdConnectConstants.Errors.InvalidRequest,
+                        ErrorDescription = "The mandatory 'provider' parameter was missing."
+                    });
+                };
+
+                var isValid = await _externalAuthManager.VerifyExternalAccessToken( request.Assertion, provider);
 
                 if (!isValid)
                 {
@@ -137,7 +150,7 @@ namespace OAuthApi.AuthServer.Controllers
                     });
                 }
 
-                var profile = await _externalAuthManager.GetProfile(request.Assertion, "facebook");
+                var profile = await _externalAuthManager.GetProfile(request.Assertion, provider);
 
                 var user = await  _userManager.FindByEmailAsync(profile.email);
                 

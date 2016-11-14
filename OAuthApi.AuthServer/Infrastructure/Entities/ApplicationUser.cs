@@ -13,6 +13,10 @@ namespace OAuthApi.AuthServer
         {
             ExternalAccounts = new HashSet<ExternalAccount>();
         }
+
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+
         public ICollection<ExternalAccount> ExternalAccounts { get; set; }
     }
 }

@@ -3,9 +3,9 @@ import {Router} from "@angular/router";
 import {AlertService} from "../../core/services/alert.service";
 import {AuthHttp, tokenNotExpired, JwtHelper} from "angular2-jwt";
 import {Observable} from "rxjs/Observable";
-import {TokenService} from '../../core/auth/token.service';
 import {AppState} from '../app-store';
 import {Store} from '@ngrx/store';
+import { AuthTokenService } from '../../core/auth-token/auth-token.service';
 
 
 @Component({
@@ -16,7 +16,7 @@ export class HomeComponent {
 constructor(    private router: Router,
                 private alertService: AlertService,
                 private authHttp: AuthHttp,
-                private tokens: TokenService,
+                private tokens: AuthTokenService,
                 private store: Store<AppState>
     ){}
 
@@ -29,7 +29,7 @@ constructor(    private router: Router,
     }
 
     testToken(){
-        this.store.select( state => state.auth.tokens.access_token)
+        this.store.select( state => state.auth.authTokens.access_token)
             .subscribe(
 
                 token => {

@@ -11,13 +11,12 @@ import {HttpExceptionService} from "./services/http-exceptions.service";
 import {AuthApiService} from "./services/auth-api.service";
 import {FormValidationService} from "./services/form-validation.service";
 import {AuthGuard} from './guards/auth-guard.service';
-import {TokenService} from './auth/token.service';
-import {AccountService} from './auth/account.service';
 import {AuthActions} from './stores/auth.store';
 import {ProfileActions} from './stores/profile.store';
 import {Logger, ConsoleLoggerBackend, LoggingBackend} from './logger';
-import {TokenActions} from './stores/token.store';
 import {ExternalAuthService} from './auth/external-auth.service';
+import { AuthTokenService } from './auth-token/auth-token.service';
+import { AccountService } from './account/account.service';
 
 
 @NgModule({
@@ -32,12 +31,11 @@ import {ExternalAuthService} from './auth/external-auth.service';
         HttpExceptionService,
         FormValidationService,
         AuthGuard,
-        TokenService,
+        AuthTokenService,
         AccountService,
         ExternalAuthService,
 
         AuthActions,
-        TokenActions,
         ProfileActions,
 
         { provide: StorageBackend, useClass: LocalStorageBackend },
