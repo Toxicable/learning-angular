@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { Response, Headers, RequestOptions, Http } from '@angular/http';
-import { LoadingBarService } from '../services/loading-bar.service';
+import { LoadingBarService } from '../loading-bar/loading-bar.service';
 import { HttpExceptionService } from '../services/http-exceptions.service';
 import { AppState } from '../../app/app-store';
 import { Store } from '@ngrx/store';
 import { ProfileModel } from '../models/profile-model';
 import { LoginModel } from '../../+auth/models/login-model';
 import { Storage } from "../storage";
-import { AlertService } from '../services/alert.service';
+import { AlertService } from '../alert/alert.service';
 import { JwtHelper } from 'angular2-jwt';
 import { AuthActions } from '../stores/auth.store';
 import { ProfileActions } from '../stores/profile.store';
@@ -82,7 +82,7 @@ export class AuthTokenService {
     }
 
     startupTokenRefresh() {
-        return this.storage.getItem("tokens")
+        return this.storage.getItem("auth-tokens")
             .flatMap( (rawTokens: string) => {
                 //check if the token is even if localStorage, if it isn't tell them it's not and return
                 if(!rawTokens){
@@ -93,9 +93,9 @@ export class AuthTokenService {
                 let tokens = JSON.parse(rawTokens) as AuthTokenModel;
                 this.store.dispatch(new authTokenActions.LoadAction(tokens))
 
-                if(!this.jwtHelper.isTokenExpired(tokens.access_token)){
+                if(!this.jwtHelper.isTokenExpired(tokens.id_token)){
                     //grab the profile out so we can store it
-                    let profile = this.jwtHelper.decodeToken(tokens.access_token) as ProfileModel;
+                    let profile = this.jwtHelper.decodeToken(tokens.id_token) as ProfileModel;
                     this.profileActions.storeProfile(profile);
 
                     //we can let the app know that we're good to go ahead of time

@@ -51,7 +51,7 @@ const authReadyReducer: ActionReducer<boolean> = (state = false, action: Action)
 
 export const authReducer: ActionReducer<Auth> = combineReducers({
     profile: profileReducer,
-    tokens: authTokenReducer.reducer,
+    authTokens: authTokenReducer.reducer,
     loggedIn: loggedInReducer,
     authReady: authReadyReducer
 });

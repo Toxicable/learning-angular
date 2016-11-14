@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import {AlertService} from "../services/alert.service";
+import {AlertService} from "../alert/alert.service";
 import {ProfileService} from "../profile/profile.service";
 import {AppState} from '../../app/app-store';
 import {Store} from '@ngrx/store';

@@ -3,7 +3,7 @@ import { Observable } from "rxjs";
 import { Injectable } from "@angular/core";
 import { AuthHttp } from "angular2-jwt";
 import { HttpExceptionService } from "./http-exceptions.service";
-import { LoadingBarService} from './loading-bar.service';
+import { LoadingBarService} from '../loading-bar/loading-bar.service';
 
 @Injectable()
 export class AuthApiService{

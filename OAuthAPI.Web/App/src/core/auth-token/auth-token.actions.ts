@@ -3,8 +3,8 @@ import { type } from '../../util/action-name-helper';
 import { AuthTokenModel } from '../models/auth-tokens.model';
 
 export const ActionTypes = {
-    LOAD: type('[AuthTokens] Load'),
-    DELETE: type('[AuthTokens] Delete')
+    LOAD: type('[AuthToken] Load'),
+    DELETE: type('[AuthToken] Delete')
 }
 
 export class DeleteAction implements Action{

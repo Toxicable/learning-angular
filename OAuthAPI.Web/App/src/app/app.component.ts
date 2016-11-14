@@ -2,7 +2,7 @@
 import {Store} from '@ngrx/store';
 import {AppState} from './app-store';
 import {AuthActions} from '../core/stores/auth.store';
-import {AlertService} from '../core/services/alert.service';
+import {AlertService} from '../core/alert/alert.service';
 import { AuthTokenService } from '../core/auth-token/auth-token.service';
 
 @Component({

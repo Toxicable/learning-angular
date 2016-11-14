@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {AuthApiService} from "../../core/services/auth-api.service";
 import {AppState} from '../../app/app-store';
 import {Store} from '@ngrx/store';
-import {LoadingBarService} from '../../core/services/loading-bar.service';
+import {LoadingBarService} from '../../core/loading-bar/loading-bar.service';
 
 @Injectable()
 export class UserService{

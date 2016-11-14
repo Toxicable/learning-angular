@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {LoadingBarService} from "../../core/services/loading-bar.service";
+import {LoadingBarService} from "../../core/loading-bar/loading-bar.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {AlertService} from "../../core/services/alert.service";
+import {AlertService} from "../../core/alert/alert.service";
 import {Http} from "@angular/http";
 import {FormGroup, FormBuilder, Validators} from "@angular/forms";
 import {FormValidationService} from "../../core/services/form-validation.service";

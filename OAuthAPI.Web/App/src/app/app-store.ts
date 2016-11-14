@@ -1,12 +1,12 @@
-import { StoreModule }       from '@ngrx/store';
+import { StoreModule }        from '@ngrx/store';
 //models
-import { User }              from '../+admin/models/user';
-import { Alert }             from '../core/models/alert.model';
+import { User }               from '../+admin/models/user';
+import { Alert }              from '../core/models/alert.model';
 //reducers
-import { alertsReducer }     from '../shared/alert/alert.reducer';
-import { loadingBarReducer } from '../shared/loading-bar/loading-bar.reducer';
-import { usersReducer }      from '../+admin/users/user-reducer';
-import { authReducer, Auth } from '../core/stores/auth.store';
+import * as alertReducer      from '../core/alert/alert.reducer';
+import * as loadingBarReducer from '../core/loading-bar/loading-bar.reducer';
+import { usersReducer }       from '../+admin/users/user-reducer';
+import { authReducer, Auth }  from '../core/stores/auth.store';
 
 export interface AppState{
     users: User[],
@@ -19,7 +19,7 @@ export interface AppState{
 export const providedStore = StoreModule
     .provideStore({
         users: usersReducer,
-        alerts: alertsReducer,
-        loading: loadingBarReducer,
+        alerts: alertReducer.reducer,
+        loading: loadingBarReducer.reducer,
         auth: authReducer
     });

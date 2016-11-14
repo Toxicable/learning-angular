@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {RegisterModel} from '../../+auth/models/register-model';
 import {Observable} from 'rxjs';
 import {Response, Http} from '@angular/http';
-import {LoadingBarService} from '../services/loading-bar.service';
+import {LoadingBarService} from '../loading-bar/loading-bar.service';
 import {HttpExceptionService} from '../services/http-exceptions.service';
 import {LoginModel} from '../../+auth/models/login-model';
 import {AuthApiService} from '../services/auth-api.service';
@@ -43,8 +43,8 @@ export class AccountService {
     }
 
     externalLogin(model: ExternalLoginModel){
-        return this.authTokens.getTokens(model, "urn:ietf:params:oauth:grant-type:external_identity_token");
-        
+        return this.authTokens.getTokens(model, "urn:ietf:params:oauth:grant-type:external_identity_token")
+            .do(() => this.authTokens.scheduleRefresh())        
     }
 
     login(user: LoginModel)  {

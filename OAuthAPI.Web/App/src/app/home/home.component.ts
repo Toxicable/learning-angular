@@ -1,6 +1,6 @@
 import { Component } from '@angular/core'
 import {Router} from "@angular/router";
-import {AlertService} from "../../core/services/alert.service";
+import {AlertService} from "../../core/alert/alert.service";
 import {AuthHttp, tokenNotExpired, JwtHelper} from "angular2-jwt";
 import {Observable} from "rxjs/Observable";
 import {AppState} from '../app-store';

@@ -1,9 +1,9 @@
 import {Component, OnInit} from "@angular/core";
 import {ProfileService} from "../../core/profile/profile.service";
-import {AlertService} from "../../core/services/alert.service";
+import {AlertService} from "../../core/alert/alert.service";
 import {ActivatedRoute} from "@angular/router";
 import {Http} from "@angular/http";
-import {LoadingBarService} from "../../core/services/loading-bar.service";
+import {LoadingBarService} from "../../core/loading-bar/loading-bar.service";
 import {AuthHttp} from "angular2-jwt";
 import {AppState} from '../../app/app-store';
 import {Store} from '@ngrx/store';
