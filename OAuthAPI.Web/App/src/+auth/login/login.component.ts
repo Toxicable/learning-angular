@@ -43,10 +43,17 @@ export class LoginComponent implements OnInit{
 
     facebookAuthorize(){
         this.externalAuth.authorizeFacebook()
+        .subscribe( x => {
+                this.alert.sendSuccess("Successfully registered");
+            })
     }
 
     googleAuthorize(){
         this.externalAuth.authorizeGoogle()
+            .subscribe( x => {
+                this.alert.sendSuccess("Successfully registered");
+            })
     }
+    
 
 }

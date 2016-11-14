@@ -23,6 +23,7 @@ namespace OAuthApi.AuthServer
                 .ConfigureLogging(options => options.AddConsole())
                 .ConfigureLogging(options => options.AddDebug())
                 .UseConfiguration(configuration)
+                .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseKestrel()
                 .UseStartup<Startup>()

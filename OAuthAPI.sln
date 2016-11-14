@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OAuthAPI.Data", "OAuthAPI.Data\OAuthAPI.Data.csproj", "{ECFC908F-8564-4C4E-8456-8BC5E3E0F6A7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OAuthAPI.Tests", "OAuthAPI.Tests\OAuthAPI.Tests.csproj", "{1FDEF8D7-EE1C-470D-9018-FEBB9E1AC181}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OAuthAPI.Web", "OAuthAPI.Web\OAuthAPI.Web.csproj", "{FE46F959-09B9-4182-9AEC-E66364EFC1AC}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "OAuthApi.AuthServer", "OAuthApi.AuthServer\OAuthApi.AuthServer.xproj", "{EB20BBB7-591C-44AB-8FDE-3272CAC2BF56}"
@@ -17,14 +13,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{ECFC908F-8564-4C4E-8456-8BC5E3E0F6A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ECFC908F-8564-4C4E-8456-8BC5E3E0F6A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ECFC908F-8564-4C4E-8456-8BC5E3E0F6A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ECFC908F-8564-4C4E-8456-8BC5E3E0F6A7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1FDEF8D7-EE1C-470D-9018-FEBB9E1AC181}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1FDEF8D7-EE1C-470D-9018-FEBB9E1AC181}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1FDEF8D7-EE1C-470D-9018-FEBB9E1AC181}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1FDEF8D7-EE1C-470D-9018-FEBB9E1AC181}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FE46F959-09B9-4182-9AEC-E66364EFC1AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FE46F959-09B9-4182-9AEC-E66364EFC1AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE46F959-09B9-4182-9AEC-E66364EFC1AC}.Release|Any CPU.ActiveCfg = Release|Any CPU

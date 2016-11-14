@@ -20,7 +20,7 @@ namespace OAuthApi.AuthServer
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
@@ -33,6 +33,7 @@ namespace OAuthApi.AuthServer
         {
             //TODO: stringly ttype this
             services.AddSingleton<IConfiguration>(Configuration);
+            services.AddTransient< IExternalAuthorizationManager, ExternalAuthorizationManager>();
 
             services.AddMvc();
 

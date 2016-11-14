@@ -216,11 +216,16 @@ namespace OAuthAPI.WebApi.Api.Identity.Controllers
             ClaimsIdentity identity = await user.GenerateUserIdentityAsync(AppUserManager, "JWT");
 
             var tokenExpiration = TimeSpan.FromMinutes(double.Parse(ConfigurationManager.AppSettings["as:AccessTokenExpireTimeSpanMinutes"]));
-            var props = new AuthenticationProperties()
-            {
-                IssuedUtc = DateTime.UtcNow,
-                ExpiresUtc = DateTime.UtcNow.Add(tokenExpiration),
-            };
+            var props = new AuthenticationProperties(new Dictionary<string, string>
+             {
+                 {
+                     "as:client_id",  string.Empty
+                }, {
+                    "IssuedUtc", DateTime.UtcNow.ToString()
+                }, {
+                    "ExpiresUtc", DateTime.UtcNow.Add(tokenExpiration).ToString()
+                }
+             });
 
             var ticket = new AuthenticationTicket(identity, props);
 
@@ -236,7 +241,7 @@ namespace OAuthAPI.WebApi.Api.Identity.Controllers
                                         new JProperty("expires_in", tokenExpiration.TotalSeconds.ToString()),
                                         new JProperty(".issued", ticket.Properties.IssuedUtc.ToString()),
                                         new JProperty(".expires", ticket.Properties.ExpiresUtc.ToString())
-        );
+                );
 
             return tokenResponse;
         }

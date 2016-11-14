@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using OAuthApi.AuthServer.Infrastructure.Models;
+using OAuthApi.AuthServer.Infrastructure.Entities;
+using AspNet.Security.OpenIdConnect.Extensions;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,19 +18,23 @@ namespace OAuthApi.AuthServer.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _applicationDbContext;
+        private readonly IExternalAuthorizationManager _externalAuthManager;
         private static bool _databaseChecked;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
-            ApplicationDbContext applicationDbContext)
+            ApplicationDbContext applicationDbContext,
+            IExternalAuthorizationManager externalAuthManager
+            )
         {
+            _externalAuthManager = externalAuthManager;
             _userManager = userManager;
             _applicationDbContext = applicationDbContext;
         }
 
         //
         // POST: /Account/Register
-        [HttpPost]
+        [HttpPost("/api/account/register")]
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromForm]RegisterViewModel model)
         {
@@ -36,6 +43,42 @@ namespace OAuthApi.AuthServer.Controllers
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    return Ok();
+                }
+                AddErrors(result);
+            }
+
+            // If we got this far, something failed.
+            return BadRequest(ModelState);
+        }
+
+        [HttpPost("/api/account/RegisterExternal")]
+        [AllowAnonymous]
+        public async Task<IActionResult> RegisterExternal([FromBody]RegisterExternalBindingModel model)
+        {
+            EnsureDatabaseCreated(_applicationDbContext);
+            if (ModelState.IsValid)
+            {
+                var isValid = await _externalAuthManager.VerifyExternalAccessToken(model.AccessToken, model.Provider);
+
+                if (!isValid)
+                {
+                    return BadRequest(new OpenIdConnectResponse
+                    {
+                        Error = OpenIdConnectConstants.Errors.InvalidRequest,
+                        ErrorDescription = "Invalid access_token, this usually happens when it is expired"
+                    });
+                }
+
+                var profile = await _externalAuthManager.GetProfile(model.AccessToken, model.Provider);
+
+                var user = new ApplicationUser { UserName = profile.email, Email = profile.email };
+                var externalAccount = new ExternalAccount() { AddedAt = DateTimeOffset.Now, Provider = model.Provider, ProviderUserId = profile.id };
+                user.ExternalAccounts.Add(externalAccount);
+
+                var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
                     return Ok();

@@ -48,6 +48,7 @@ export class AppModule {
         this.appRef.tick();
         delete store.state;
         delete store.restoreInputValues;
+        console.clear();
     }
     hmrOnDestroy(store: any) {
         var cmpLocation = this.appRef.components.map(cmp => cmp.location.nativeElement);

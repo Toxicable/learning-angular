@@ -25,14 +25,17 @@ namespace OAuthApi.AuthServer.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly IExternalAuthorizationManager _externalAuthManager;
 
         public AuthorizationController(
             OpenIddictApplicationManager<OpenIddictApplication> applicationManager,
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
-            IConfiguration configuration
+            IConfiguration configuration,
+            IExternalAuthorizationManager externalAuthManager
             )
         {
+            _externalAuthManager = externalAuthManager;
             _configuration = configuration;
             _applicationManager = applicationManager;
             _signInManager = signInManager;
@@ -112,6 +115,7 @@ namespace OAuthApi.AuthServer.Controllers
 
             else if (request.GrantType == "urn:ietf:params:oauth:grant-type:facebook_identity_token")
             {
+                //Assertion should be the access_token
                 // Reject the request if the "assertion" parameter is missing.
                 if (string.IsNullOrEmpty(request.Assertion))
                 {
@@ -120,14 +124,22 @@ namespace OAuthApi.AuthServer.Controllers
                         Error = OpenIdConnectConstants.Errors.InvalidRequest,
                         ErrorDescription = "The mandatory 'assertion' parameter was missing."
                     });
+                };
+
+                var isValid = await _externalAuthManager.VerifyExternalAccessToken( request.Assertion, "facebook");
+
+                if (!isValid)
+                {
+                    return BadRequest(new OpenIdConnectResponse
+                    {
+                        Error = OpenIdConnectConstants.Errors.InvalidRequest,
+                        ErrorDescription = "Invalid access_token, this usually happens when it is expired"
+                    });
                 }
-                var username = "";
 
-                await VerifyExternalAccessToken( request.Assertion, "facebook");
-                //get username from external provider
-                //make sure it matches up
+                var profile = await _externalAuthManager.GetProfile(request.Assertion, "facebook");
 
-                var user = await  _userManager.FindByEmailAsync(username);
+                var user = await  _userManager.FindByEmailAsync(profile.email);
                 
                 if(user == null)
                 {
@@ -167,63 +179,6 @@ namespace OAuthApi.AuthServer.Controllers
                 Error = OpenIdConnectConstants.Errors.UnsupportedGrantType,
                 ErrorDescription = "The specified grant type is not supported."
             });
-        }
-
-        private async Task<bool> VerifyExternalAccessToken(string accessToken, string provider)
-        {
-            var verifyEndpoint = string.Empty;
-
-            if (provider == "facebook")
-            {
-                var appToken = _configuration["Authentication:External:Facebook:apptoken"] ?? "1841204649444154|vAuk5P5YomtABVYDfOl12PmFcUs";
-                verifyEndpoint = $"https://graph.facebook.com/debug_token?input_token={ accessToken }&access_token={ appToken }";
-            }
-
-            if (provider == "google")
-            {
-                verifyEndpoint = $"https://www.googleapis.com/oauth2/v3/tokeninfo?access_token={ accessToken }";
-            }
-
-            if (string.IsNullOrWhiteSpace(verifyEndpoint))
-            {
-                ModelState.AddModelError("", "Provider not supported");
-            }
-
-            var client = new HttpClient();
-            var uri = new Uri(verifyEndpoint);
-            var response = await client.GetAsync(uri);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-
-                //TODO: find if i can stringly type this
-                dynamic jObj = (JObject)JsonConvert.DeserializeObject(content);
-
-                string tokenAppId = "";
-
-                if (provider == "facebook")
-                {
-                    var result = JsonConvert.DeserializeObject<FacebookDebugTokenBindingModel>(content);
-                    
-                    if (!_configuration["Authentication:External:Facebook:appid"].Equals(result.Data.App_Id.ToString(), StringComparison.OrdinalIgnoreCase))
-                    {
-                        return false;
-                    }
-
-                }
-                else if (provider == "google")
-                {
-                    //TODO: create stringly typed model for this
-                    tokenAppId = jObj["audience"];
-                    if (!_configuration["Authentication:External:Google:clientid"].Equals(tokenAppId, StringComparison.OrdinalIgnoreCase))
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
         }
 
         private async Task<AuthenticationTicket> CreateTicketAsync(OpenIdConnectRequest request, ApplicationUser user)

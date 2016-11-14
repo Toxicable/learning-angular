@@ -37,12 +37,7 @@
         "dnxcore50",
         "portable-net45+win8",
         "net45"
-      ],
-      "dependencies": {
-        "OAuthAPI.Data": {
-          "target": "project"
-        }
-      }
+      ]
     }
   },
 

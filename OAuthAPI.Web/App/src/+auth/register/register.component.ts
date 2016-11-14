@@ -4,6 +4,7 @@ import {FormValidationService} from "../../core/services/form-validation.service
 import {AlertService} from "../../core/services/alert.service";
 import {Router} from "@angular/router";
 import {AccountService} from '../../core/auth/account.service';
+import { ExternalAuthService } from '../../core/auth/external-auth.service';
 
 @Component({
     selector: 'register',
@@ -14,7 +15,8 @@ export class RegisterComponent  implements OnInit {
                 private account: AccountService,
                 private alert: AlertService,
                 private router: Router,
-                private formValidator: FormValidationService
+                private formValidator: FormValidationService,
+                private externalAuth: ExternalAuthService
     ) {   }
     registerForm: FormGroup;
 
@@ -26,8 +28,8 @@ export class RegisterComponent  implements OnInit {
                 confirmPassword: ['', [Validators.required, this.formValidator.passwordValidator]]
             }, {validator: this.formValidator.passwordComparisonValidator})
         });
+        this.externalAuth.init();
     }
-
 
     onSubmit(){
         let data = Object.assign({}, this.registerForm.value, this.registerForm.value.passwords);
@@ -42,6 +44,27 @@ export class RegisterComponent  implements OnInit {
                 }
             )
     };
+
+    facebookAuthorize(){
+        this.externalAuth.authorizeFacebook()
+            .subscribe( x => {
+                this.alert.sendSuccess("Successfully registered");
+                this.router.navigateByUrl("/auth/login");
+            }
+        )
+    }
+
+    fuckinggoogleauth(){
+        debugger
+        let y = this.externalAuth.authorizeGoogle()
+
+        console.log(y);
+            // .subscribe( x => {
+            //     this.alert.sendSuccess("Successfully registered");
+            //     this.router.navigateByUrl("/auth/login");
+            // })
+        
+    }
 
 
 }

@@ -236,15 +236,13 @@
     <Compile Include="Api\Identity\Results\ChallangeResult.cs" />
     <Compile Include="Api\Services\EmailService.cs" />
     <Compile Include="ApplicationDbContext.cs" />
+    <Compile Include="Identity\ApplicationUser.cs" />
+    <Compile Include="Identity\Client.cs" />
+    <Compile Include="Identity\ExternalAccount.cs" />
+    <Compile Include="Identity\RefreshToken.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\OAuthAPI.Data\OAuthAPI.Data.csproj">
-      <Project>{ecfc908f-8564-4c4e-8456-8bc5e3e0f6a7}</Project>
-      <Name>OAuthAPI.Data</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

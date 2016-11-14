@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OAuthApi.AuthServer.Infrastructure.Entities;
 using OpenIddict;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,8 @@ namespace OAuthApi.AuthServer
     {
         public ApplicationDbContext(DbContextOptions options)
             : base(options) { }
+
+        public DbSet<ExternalAccount> ExternalAccounts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

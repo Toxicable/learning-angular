@@ -29,12 +29,12 @@ export class AccountService {
 
     register(data: RegisterModel): Observable<Response> {
         return this.http.post("api/account/create", data)
+
             .catch( this.httpExceptions.handleError )
     }
 
     externalRegister(model: ExternalRegistrationModel){
-        return this.http.post('/api/account/CreateExternal', model)
-            .catch( this.httpExceptions.handleError )
+        return this.http.post('/api/account/registerexternal', model)
     }
 
     login(user: LoginModel)  {
