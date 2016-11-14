@@ -7,7 +7,7 @@ namespace OAuthApi.AuthServer.Infrastructure.Models
 {
     public class RegisterExternalBindingModel
     {
-        public string Provider { get; set; }
+        public ExternalAuthProviders Provider { get; set; }
         public string AccessToken { get; set; }
     }
 }

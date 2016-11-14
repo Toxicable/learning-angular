@@ -12,8 +12,14 @@ namespace OAuthApi.AuthServer
 {
     public interface IExternalAuthorizationManager
     {
-        Task<ExternalProfileBindingModel> GetProfile(string accessToken, string provider);
+        Task<ExternalProfileBindingModel> GetProfile(string accessToken, ExternalAuthProviders provider);
         Task<bool> VerifyExternalAccessToken(string accessToken, string provider);
+    }
+
+    public enum ExternalAuthProviders
+    {
+        facebook,
+        google
     }
 
     public class ExternalAuthorizationManager : IExternalAuthorizationManager
@@ -27,35 +33,44 @@ namespace OAuthApi.AuthServer
             _configuration = configuration;
         }
 
-        public async Task<ExternalProfileBindingModel> GetProfile(string accessToken, string provider)
+        public async Task<ExternalProfileBindingModel> GetProfile(string accessToken, ExternalAuthProviders provider)
         {
-            var url = $"https://graph.facebook.com/me?fields=email,first_name,last_name&access_token={ accessToken }";
-            var client = new HttpClient();
-            var uri = new Uri(url);
-            var response = await client.GetAsync(uri);
-
-            if (response.IsSuccessStatusCode)
+            if(provider == ExternalAuthProviders.facebook)
             {
-                var content = await response.Content.ReadAsStringAsync();
+                var url = $"https://graph.facebook.com/me?fields=email,first_name,last_name&access_token={ accessToken }";
+                var client = new HttpClient();
+                var uri = new Uri(url);
+                var response = await client.GetAsync(uri);
 
-                var profile = JsonConvert.DeserializeObject<ExternalProfileBindingModel>(content);
-                return profile;
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+
+                    var profile = JsonConvert.DeserializeObject<ExternalProfileBindingModel>(content);
+                    return profile;
+                }
+                return null;
             }
-            return null;
-               
+
+            if (provider == ExternalAuthProviders.google)
+            {
+
+            }
+
+
         }
 
-        public async Task<bool> VerifyExternalAccessToken(string accessToken, string provider)
+        public async Task<bool> VerifyExternalAccessToken(string accessToken, ExternalAuthProviders provider)
         {
             var verifyEndpoint = string.Empty;
 
-            if (provider == "facebook")
+            if (provider == ExternalAuthProviders.facebook)
             {
                 var appToken = _configuration["Authentication:External:Facebook:apptoken"];
                 verifyEndpoint = $"https://graph.facebook.com/debug_token?input_token={ accessToken }&access_token={ appToken }";
             }
 
-            if (provider == "google")
+            if (provider == ExternalAuthProviders.google)
             {
                 verifyEndpoint = $"https://www.googleapis.com/oauth2/v3/tokeninfo?access_token={ accessToken }";
             }
@@ -73,21 +88,21 @@ namespace OAuthApi.AuthServer
             {
                 var content = await response.Content.ReadAsStringAsync();             
 
-                if (provider == "facebook")
+                if (provider == ExternalAuthProviders.facebook)
                 {
                     var result = JsonConvert.DeserializeObject<FacebookDebugTokenBindingModel>(content);
 
-                    if (!_configuration["Authentication:External:Facebook:appid"].Equals(result.Data.App_Id.ToString(), StringComparison.OrdinalIgnoreCase))
+                    if (!_configuration["Authentication:External:Facebook:appid"].Equals(result.Data.App_Id, StringComparison.OrdinalIgnoreCase))
                     {
                         return false;
                     }
 
                 }
-                else if (provider == "google")
+                else if (provider == ExternalAuthProviders.google)
                 {
                     var result = JsonConvert.DeserializeObject<GoogleTokenInfoBindingModel>(content);
 
-                    if (!_configuration["Authentication:External:Google:clientid"].Equals(result., StringComparison.OrdinalIgnoreCase))
+                    if (!_configuration["Authentication:External:Google:clientid"].Equals(result.azp, StringComparison.OrdinalIgnoreCase))
                     {
                         return false;
                     }
