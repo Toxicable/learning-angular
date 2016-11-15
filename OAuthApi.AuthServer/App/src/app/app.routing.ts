@@ -17,7 +17,7 @@ const appRoutes: Routes = [
     {
         path:'admin',
         loadChildren: '../+admin/admin.module#AdminModule',
-        canLoad: [SuperAdminAuthGuard]
+        //canLoad: [SuperAdminAuthGuard]
     },
     {
         path:'auth',

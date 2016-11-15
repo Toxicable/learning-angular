@@ -84,7 +84,7 @@ namespace OAuthApi.AuthServer
 
             if (provider == ExternalAuthProviders.Facebook)
             {
-                var appToken = _configuration["Authentication:External:Facebook:apptoken"];
+                var appToken = _configuration["Authentication:External:Facebook:appToken"];
                 verifyEndpoint = $"https://graph.facebook.com/debug_token?input_token={ accessToken }&access_token={ appToken }";
             }
 
@@ -110,7 +110,7 @@ namespace OAuthApi.AuthServer
                 {
                     var result = JsonConvert.DeserializeObject<FacebookDebugTokenBindingModel>(content);
 
-                    if (!_configuration["Authentication:External:Facebook:appid"].Equals(result.Data.App_Id, StringComparison.OrdinalIgnoreCase))
+                    if (!_configuration["Authentication:External:Facebook:appId"].Equals(result.Data.App_Id, StringComparison.OrdinalIgnoreCase))
                     {
                         return false;
                     }
@@ -120,7 +120,7 @@ namespace OAuthApi.AuthServer
                 {
                     var result = JsonConvert.DeserializeObject<GoogleTokenInfoBindingModel>(content);
                     
-                    if (!_configuration["Authentication:External:Google:clientid"].Equals(result.azp, StringComparison.OrdinalIgnoreCase))
+                    if (!_configuration["Authentication:External:Google:clientId"].Equals(result.azp, StringComparison.OrdinalIgnoreCase))
                     {
                         return false;
                     }

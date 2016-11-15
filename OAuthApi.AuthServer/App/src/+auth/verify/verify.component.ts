@@ -4,10 +4,10 @@ import {AlertService} from "../../core/alert/alert.service";
 import {ActivatedRoute} from "@angular/router";
 import {Http} from "@angular/http";
 import {LoadingBarService} from "../../core/loading-bar/loading-bar.service";
-import {AuthHttp} from "angular2-jwt";
 import {AppState} from '../../app/app-store';
 import {Store} from '@ngrx/store';
 import { AuthTokenService } from '../../core/auth-token/auth-token.service';
+import { AuthHttp } from '../../core/auth-http/auth-http.service';
 
 @Component({
     selector: 'verify',
@@ -53,13 +53,10 @@ export class VerifyComponent implements OnInit{
     }
 
     sendConfirmationEmail(): void{
-        this.loadingBar.load()
-
         this.authHttp.get("api/account/SendConfirmEmail")
             .subscribe(
                 () => this.alert.sendSuccess("A confirmation email has been send"),
                 (error) => this.alert.sendError(error),
-                () => this.loadingBar.done()
         )
     }
 

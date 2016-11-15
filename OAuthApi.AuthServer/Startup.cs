@@ -11,6 +11,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
+using OpenIddict;
+using CryptoHelper;
 
 namespace OAuthApi.AuthServer
 {
@@ -21,9 +23,16 @@ namespace OAuthApi.AuthServer
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                //.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
+
+            if (env.IsDevelopment())
+            {
+                // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
+                builder.AddUserSecrets();
+            }
+
             Configuration = builder.Build();
         }
 
@@ -144,10 +153,33 @@ namespace OAuthApi.AuthServer
             app.UseDefaultFiles(options);
             app.UseStaticFiles();
 
+            SeedDatabase(app);
+        }
 
+        private void SeedDatabase(IApplicationBuilder app)
+        {
+            var options = app
+                .ApplicationServices
+                .GetRequiredService<DbContextOptions<ApplicationDbContext>>();
 
+            using (var context = new ApplicationDbContext(options))
+            {
+                //context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
 
-        }    
+                if (!context.Applications.Any())
+                {
+                    context.Applications.Add(new OpenIddictApplication
+                    {
+                        ClientId = "ResourceServer02",
+                        ClientSecret = Crypto.HashPassword("secret_secret_secret"),
+                        Type = OpenIddictConstants.ClientTypes.Confidential
+                    });
+                }
+
+                context.SaveChanges();
+            }
+        }
 
     }
 }

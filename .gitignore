@@ -5,7 +5,6 @@ Web.AppSettings.Local.config
 Web.ConnectionStrings.Local.config
 App_Data
 yarn.lock
-appsettings.json
 
 lib
 

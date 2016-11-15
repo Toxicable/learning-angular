@@ -10,7 +10,6 @@ const adminRoutes: Routes = [
     {
         path: '',
         component: AdminComponent,
-        canActivate: [SuperAdminAuthGuard],
         children: [
             {
                 path: '',

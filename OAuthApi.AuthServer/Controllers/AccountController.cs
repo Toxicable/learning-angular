@@ -14,6 +14,7 @@ using AspNet.Security.OpenIdConnect.Extensions;
 namespace OAuthApi.AuthServer.Controllers
 {
     [Authorize]
+    [Route("api/[controller]")]
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -34,14 +35,14 @@ namespace OAuthApi.AuthServer.Controllers
 
         //
         // POST: /Account/Register
-        [HttpPost("/api/account/register")]
+        [HttpPost("register")]
         [AllowAnonymous]
         public async Task<IActionResult> Register([FromForm]RegisterViewModel model)
         {
             EnsureDatabaseCreated(_applicationDbContext);
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.UserName, Email = model.UserName };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -54,7 +55,7 @@ namespace OAuthApi.AuthServer.Controllers
             return BadRequest(ModelState);
         }
 
-        [HttpPost("/api/account/RegisterExternal")]
+        [HttpPost("RegisterExternal")]
         [AllowAnonymous]
         public async Task<IActionResult> RegisterExternal([FromBody]RegisterExternalBindingModel model)
         {

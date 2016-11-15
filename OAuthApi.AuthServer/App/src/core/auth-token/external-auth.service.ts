@@ -30,10 +30,10 @@ export class ExternalAuthService {
 
     register(provider: string){
         let accessToken$: Observable<any>;
-        if(provider == "facebook"){
+        if(provider == "Facebook"){
             accessToken$ = this.authorizeFacebook();
         }
-        if(provider == "google"){
+        if(provider == "Google"){
             accessToken$ = this.authorizeGoogle();
         }
 
