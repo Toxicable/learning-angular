@@ -12,10 +12,10 @@ import { AlertService } from '../alert/alert.service';
 import { JwtHelper } from 'angular2-jwt';
 import { ExternalLoginModel } from '../models/external-login-model';
 import { AuthTokenModel } from '../models/auth-tokens.model';
-import { ProfileAction } from '../profile/profile.actions';
-import { LoggedInAction } from '../auth-store/logged-in.actions';
-import { AuthTokenAction } from './auth-token.actions';
-import { AuthReadyAction } from '../auth-store/auth-ready.actions';
+import { LoggedInActions } from '../auth-store/logged-in.actions';
+import { AuthTokenActions } from './auth-token.actions';
+import { AuthReadyActions } from '../auth-store/auth-ready.actions';
+import { ProfileActions } from '../profile/profile.actions';
 
 @Injectable()
 export class AuthTokenService {
@@ -24,7 +24,11 @@ export class AuthTokenService {
                 private http: Http,
                 private httpExceptions: HttpExceptionService,
                 private store: Store<AppState>,
-                private alert: AlertService
+                private alert: AlertService,
+                private loggedInActions: LoggedInActions,
+                private authTokenActions: AuthTokenActions,
+                private authReadActions: AuthReadyActions,
+                private profileActions: ProfileActions
     ) { }
 
     refreshSubscription$: Subscription;
@@ -44,23 +48,22 @@ export class AuthTokenService {
         return this.http.post("/api/connect/token", this.encodeObjectToParams(data) , options)
             .map( res => res.json())
             .map( (tokens: AuthTokenModel) => {
-                this.store.dispatch(new AuthTokenAction().Load(tokens))
-
-                this.store.dispatch(new LoggedInAction().LoggedIn());
+                this.store.dispatch(this.authTokenActions.Load(tokens))
+                this.store.dispatch(this.loggedInActions.LoggedIn());
 
                 let profile = this.jwtHelper.decodeToken(tokens.id_token) as ProfileModel;
-                this.store.dispatch(new ProfileAction().Load(profile));
+                this.store.dispatch(this.profileActions.Load(profile));
 
                 this.storage.setItem("auth-tokens", JSON.stringify(tokens));
             })
-            .do( _ => this.store.dispatch(new AuthReadyAction().Ready()))
+            .do( _ => this.store.dispatch(this.authReadActions.Ready()))
             .catch( error => this.httpExceptions.handleTokenBadRequest(error));
 
     }
 
     deleteTokens(){
         this.storage.removeItem("auth-tokens");
-        this.store.dispatch(new AuthTokenAction().Delete());
+        this.store.dispatch(this.authTokenActions.Delete());
     }
 
     unsubscribeRefresh() {
@@ -85,26 +88,31 @@ export class AuthTokenService {
             .flatMap( (rawTokens: string) => {
                 //check if the token is even if localStorage, if it isn't tell them it's not and return
                 if(!rawTokens){
-                    this.store.dispatch(new AuthReadyAction().Ready());
+                    this.store.dispatch(this.authReadActions.Ready());
                     return Observable.throw("No token in Storage");
                 }
                 //parse the token into a model and throw it into the store
                 let tokens = JSON.parse(rawTokens) as AuthTokenModel;
-                this.store.dispatch(new AuthTokenAction().Load(tokens))
+                this.store.dispatch(this.authTokenActions.Load(tokens))
 
                 if(!this.jwtHelper.isTokenExpired(tokens.id_token)){
                     //grab the profile out so we can store it
                     let profile = this.jwtHelper.decodeToken(tokens.id_token) as ProfileModel;
-                    this.store.dispatch(new ProfileAction().Load(profile));
+                    this.store.dispatch(this.profileActions.Load(profile));
 
                     //we can let the app know that we're good to go ahead of time
-                    this.store.dispatch(new LoggedInAction().LoggedIn());
-                    this.store.dispatch(new AuthReadyAction().Ready())
+                    this.store.dispatch(this.loggedInActions.LoggedIn());
+                    this.store.dispatch(this.authReadActions.Ready())
                 }
 
                 //it if is able to refresh then the getTokens method will let the app know that we're auth ready
                 return this.refreshTokens()
-            });
+            })
+            .catch(error =>{                
+                this.store.dispatch(this.loggedInActions.NotLoggedIn());
+                this.store.dispatch(this.authReadActions.Ready());
+                return Observable.throw(error);
+            })
     }
 
     scheduleRefresh(): void {

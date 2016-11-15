@@ -15,6 +15,12 @@ import { AuthTokenService } from './auth-token/auth-token.service';
 import { AccountService } from './account/account.service';
 import { LoadingBarService } from './loading-bar/loading-bar.service';
 import { AuthHttp } from './auth-http/auth-http.service';
+import { LoggedInActions } from './auth-store/logged-in.actions';
+import { ProfileActions } from './profile/profile.actions';
+import { AuthTokenActions } from './auth-token/auth-token.actions';
+import { AlertActions } from './alert/alert.actions';
+import { LoadingBarActions } from './loading-bar/loading-bar.actions';
+import { AuthReadyActions } from './auth-store/auth-ready.actions';
 
 
 @NgModule({
@@ -33,6 +39,13 @@ import { AuthHttp } from './auth-http/auth-http.service';
         AccountService,
         ExternalAuthService,
         AuthHttp,
+
+        LoggedInActions,
+        ProfileActions,
+        AuthTokenActions,
+        AlertActions,
+        LoadingBarActions,
+        AuthReadyActions,
         
         { provide: StorageBackend, useClass: LocalStorageBackend },
         { provide: LoggingBackend, useClass: ConsoleLoggerBackend },

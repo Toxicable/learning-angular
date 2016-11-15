@@ -2,18 +2,20 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import {AppState} from '../../app/app-store';
 import {Store} from '@ngrx/store';
-import { LoadingBarAction } from './loading-bar.actions';
+import { LoadingBarActions } from './loading-bar.actions';
 
 @Injectable()
 export class LoadingBarService{
-    constructor(private store: Store<AppState>) {}
+    constructor(private store: Store<AppState>,
+                private loadingBarActions: LoadingBarActions,
+    ) {}
 
     load(){
-        this.store.dispatch(new LoadingBarAction().Start())
+        this.store.dispatch(this.loadingBarActions.Start())
     }
 
     done(){
-        this.store.dispatch(new LoadingBarAction().Start())
+        this.store.dispatch(this.loadingBarActions.Done())
     }
  
     doWithLoader<T>(task: Observable<T>): Observable<T>{

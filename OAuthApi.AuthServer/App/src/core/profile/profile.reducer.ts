@@ -2,7 +2,7 @@ import { ActionReducer, Action, Store } from '@ngrx/store';
 import { ProfileModel } from '../models/profile-model';
 import { Injectable } from '@angular/core';
 import { AppState } from '../../app/app-store';
-import { ProfileActions, ProfileActionTypes } from './profile.actions';
+import { ProfileActionTypes } from './profile.actions';
 
 const initialState: ProfileModel = {
     role: [""],
@@ -20,7 +20,7 @@ const initialState: ProfileModel = {
     last_name: null
 }
  
-export const profileReducer = (state = initialState, action: ProfileActions): ProfileModel => {
+export const profileReducer = (state = initialState, action: Action): ProfileModel => {
     switch (action.type){
         case ProfileActionTypes.LOAD:
             return action.payload

@@ -3,30 +3,25 @@ import { type } from '../../util/action-name-helper';
 import { AuthTokenModel } from '../models/auth-tokens.model';
 import { Alert } from '../models/alert.model';
 import { ProfileModel } from '../models/profile-model';
+import { Injectable } from '@angular/core';
 
 export const ProfileActionTypes = {
     LOAD: type('[Profile] Load'),
     DELETE: type('[Profile] Delete')
 }
 
-export class ProfileAction{
-    Load(payload: ProfileModel){
-        return new LoadAction(payload);
+@Injectable()
+export class ProfileActions{
+    Load(payload: ProfileModel): Action{
+        return {
+            type: ProfileActionTypes.LOAD,
+            payload
+        }
     }
-    Delete(payload = null){
-        return new DeleteAction(payload);
+    Delete(payload = null): Action{
+        return {
+            type: ProfileActionTypes.DELETE,
+            payload
+        }
     }
 }
-
-class LoadAction implements Action{
-    type = ProfileActionTypes.LOAD;
-    constructor(public payload: ProfileModel){}
-}
-
-class DeleteAction implements Action{
-    type = ProfileActionTypes.DELETE;
-    constructor(public payload = null){}
-}
-
-
-export type ProfileActions = LoadAction | DeleteAction;

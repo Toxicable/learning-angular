@@ -14,9 +14,9 @@ import { AuthTokenModel } from '../models/auth-tokens.model';
 import { AuthTokenService } from '../auth-token/auth-token.service';
 import { Store, StoreModule } from '@ngrx/store';
 import { AppState } from '../../app/app-store';
-import { LoggedInAction } from '../auth-store/logged-in.actions';
-import { AuthTokenAction } from '../auth-token/auth-token.actions';
-import { ProfileAction } from '../profile/profile.actions';
+import { LoggedInActions } from '../auth-store/logged-in.actions';
+import { AuthTokenActions } from '../auth-token/auth-token.actions';
+import { ProfileActions } from '../profile/profile.actions';
 
 @Injectable()
 export class AccountService {
@@ -26,7 +26,10 @@ export class AccountService {
                 private httpExceptions: HttpExceptionService,
                 private authApi: AuthApiService,
                 private authTokens: AuthTokenService,
-                private store: Store<AppState>
+                private store: Store<AppState>,
+                private loggedInAction: LoggedInActions,
+                private authTokenActions: AuthTokenActions,
+                private profileActions: ProfileActions
     ) { }
 
 
@@ -67,9 +70,9 @@ export class AccountService {
         this.authTokens.deleteTokens();
         this.authTokens.unsubscribeRefresh();
 
-        this.store.dispatch(new LoggedInAction().NotLoggedIn());
-        this.store.dispatch(new AuthTokenAction().Delete());
-        this.store.dispatch(new ProfileAction().Delete());
+        this.store.dispatch(this.loggedInAction.NotLoggedIn());
+        this.store.dispatch(this.authTokenActions.Delete());
+        this.store.dispatch(this.profileActions.Delete());
     }
 
 }

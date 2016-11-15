@@ -1,19 +1,16 @@
 import { type } from '../../util/action-name-helper';
 import { Action } from '@ngrx/store';
+import { Injectable } from '@angular/core';
 
 export const AuthReadyActionTypes = {
     READY: type('[AuthReady] True')
 }
 
-export class AuthReadyAction{
-    Ready(){
-        return new AuthIsReadyAction();
+@Injectable()
+export class AuthReadyActions{
+    Ready(): Action{
+        return {
+            type: AuthReadyActionTypes.READY
+        }
     }
 }
-
-class AuthIsReadyAction implements Action{
-    type = AuthReadyActionTypes.READY;
-    constructor(){}
-}
-
-export type AuthReadyActions = AuthIsReadyAction;

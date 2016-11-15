@@ -2,30 +2,25 @@ import { Action } from '@ngrx/store';
 import { type } from '../../util/action-name-helper';
 import { AuthTokenModel } from '../models/auth-tokens.model';
 import { Alert } from '../models/alert.model';
+import { Injectable } from '@angular/core';
 
 export const AlertActionTypes = {
     ADD: type('[Alert] Add'),
     DELETE: type('[Alert] Delete')
 }
 
-export class AlertAtion{
-    Add(payload: Alert){
-        return new AddAction(payload);
+@Injectable()
+export class AlertActions{
+    Add(payload: Alert): Action{
+        return {
+            type: AlertActionTypes.ADD,
+            payload
+        }
     }
-    Delete(payload: Alert){
-        return new DeleteAction(payload);
+    Delete(payload: Alert): Action{
+        return {
+            type: AlertActionTypes.DELETE,
+            payload
+        }
     }
 }
-
-class DeleteAction implements Action{
-    type = AlertActionTypes.DELETE;
-    constructor(public payload: Alert){}
-}
-
-class AddAction implements Action{
-    type = AlertActionTypes.ADD;
-    constructor(public payload: Alert){}
-}
-
-
-export type AlertActions = AddAction | DeleteAction;

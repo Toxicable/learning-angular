@@ -2,30 +2,23 @@ import { Action } from '@ngrx/store';
 import { type } from '../../util/action-name-helper';
 import { AuthTokenModel } from '../models/auth-tokens.model';
 import { Alert } from '../models/alert.model';
+import { Injectable } from '@angular/core';
 
 export const LoadingBarActionTypes = {
     START: type('[LoadingBar] Start'),
     DONE: type('[LoadingBar] Done')
 }
 
-export class LoadingBarAction{
-    Start(){
-        return new StartAction();
+@Injectable()
+export class LoadingBarActions{
+    Start(): Action{
+        return {
+            type: LoadingBarActionTypes.START
+        }
     }
-    Done(){
-        return new DoneAction();
+    Done(): Action{
+        return {
+            type: LoadingBarActionTypes.DONE
+        }
     }
 }
-
-class StartAction implements Action{
-    type = LoadingBarActionTypes.DONE;
-    constructor(){}
-}
-
-class DoneAction implements Action{
-    type = LoadingBarActionTypes.START;
-    constructor(){}
-}
-
-
-export type LoadingBarActions = StartAction | DoneAction;
