@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -13,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using System.IO;
 using OpenIddict;
 using CryptoHelper;
+using OAuthApi.AuthServer.Extentions;
 
 namespace OAuthApi.AuthServer
 {
@@ -65,7 +63,7 @@ namespace OAuthApi.AuthServer
                 // bind OpenIdConnectRequest or OpenIdConnectResponse parameters.
                 .AddMvcBinders()
                 // Enable the token endpoint.
-                .EnableTokenEndpoint("/api/connect/token")
+                .EnableTokenEndpoint("/connect/token")
 
                 // Enable the password and the refresh token flows.
                 .AllowPasswordFlow()
@@ -121,7 +119,22 @@ namespace OAuthApi.AuthServer
             //     options.ClientSecret = "875sqd4s5d748z78z7ds1ff8zz8814ff88ed8ea4z4zzd";
             // });
 
-            app.UseOpenIddict();
+
+
+            
+
+            app.Map("/api", apiApp =>
+            {
+                apiApp.UseSignalR2();
+                apiApp.UseOpenIddict();
+                apiApp.UseMvc(routes =>
+                {
+                    // Matches requests that correspond to an existent controller/action pair
+                    routes.MapRoute(
+                        name: "default",
+                        template: "{controller}/{action}/{id?}");
+                });
+            });
 
 
             app.Use(async (context, next) =>
@@ -134,17 +147,7 @@ namespace OAuthApi.AuthServer
                     context.Request.Path = "/index.html";
                     await next();
                 }
-            });
-
-
-
-            app.UseMvc(routes =>
-            {
-                // Matches requests that correspond to an existent controller/action pair
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller}/{action}/{id?}");
-            });
+            });            
 
             DefaultFilesOptions options = new DefaultFilesOptions();
             options.DefaultFileNames.Clear();

@@ -12,3 +12,10 @@
 <button md-raised-button color="primary">RAISED</button>
 
 
+
+<button md-raised-button color="primary" (click)="connect()">connect</button>
+<button md-raised-button color="primary" (click)="echo()">send</button>
+
+<div *ngFor="let message of messages">
+    {{message}}
+</div>

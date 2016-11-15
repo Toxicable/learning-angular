@@ -8,6 +8,7 @@ import { AuthTokenService } from '../../core/auth-token/auth-token.service';
 import { AuthHttp } from '../../core/auth-http/auth-http.service';
 
 
+        declare let $: any;
 @Component({
     selector: 'home',
     templateUrl: './home.component.html'
@@ -28,15 +29,26 @@ constructor(    private router: Router,
             )
     }
 
-    // testToken(){
-    //     this.store.select( state => state.auth.authTokens.access_token)
-    //         .subscribe(
+    hub: any
+    messages: string[] = ["Testa 1", "test 2"];
 
-    //             token => {
-    //                 let jwtHelper: JwtHelper = new JwtHelper();
-    //                 console.log(jwtHelper.isTokenExpired(token))}
-    //         )
-    // }
+    connect(){
+        this.hub = $.connection.echoHub;
+        $.connection.hub.logging = true;
+        this.hub.client.broadCast = (message: string) => {
+            console.log(this.messages)
+            this.messages.push(message)
+        }
+
+        $.connection.hub.start().done(() => {
+            console.log("Connected")
+        })
+    }
+
+    echo(){        
+        this.hub.server.broadcast("I am number 1");
+    }
+
 
     refreshTokens() {
         this.tokens.refreshTokens()

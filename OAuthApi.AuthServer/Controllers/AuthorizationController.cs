@@ -42,7 +42,7 @@ namespace OAuthApi.AuthServer.Controllers
             _userManager = userManager;
         }
 
-        [HttpPost("~/api/connect/token"), Produces("application/json")]
+        [HttpPost("~/connect/token"), Produces("application/json")]
         public async Task<IActionResult> Exchange(OpenIdConnectRequest request)
         {
             if (request.IsPasswordGrantType())
