@@ -6,7 +6,6 @@ import { LocalStorageBackend, Storage, StorageBackend } from "./storage";
 import { AlertService } from "./alert/alert.service";
 import { ProfileService } from "./profile/profile.service";
 import { HttpExceptionService } from "./services/http-exceptions.service";
-import { AuthApiService } from "./services/auth-api.service";
 import { FormValidationService } from "./services/form-validation.service";
 import { AuthGuard } from './guards/auth-guard.service';
 import { Logger, ConsoleLoggerBackend, LoggingBackend } from './logger';
@@ -31,7 +30,6 @@ import { AuthReadyActions } from './auth-store/auth-ready.actions';
         SuperAdminAuthGuard,
         AuthenticatedAuthGuard,
         Title,
-        AuthApiService,
         HttpExceptionService,
         FormValidationService,
         AuthGuard,

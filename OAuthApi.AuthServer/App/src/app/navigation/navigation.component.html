@@ -11,8 +11,8 @@
 
     <div class="right">
 
-        <div *ngIf="loggedIn$ | async" >
-            Welcome {{username$ | async}}
+        <div *ngIf="loggedIn | async" >
+            Welcome {{username | async}}
             <a routerLink="/" (click)="account.logout()">Logout</a>
         </div>
     </div>

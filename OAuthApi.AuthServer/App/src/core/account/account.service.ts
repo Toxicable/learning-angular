@@ -5,7 +5,6 @@ import { Response, Http } from '@angular/http';
 import { LoadingBarService } from '../loading-bar/loading-bar.service';
 import { HttpExceptionService } from '../services/http-exceptions.service';
 import { LoginModel } from '../../+auth/models/login-model';
-import { AuthApiService } from '../services/auth-api.service';
 import { ChangePasswordModel } from '../models/change-password';
 import { ResetPasswordModel } from '../models/reser-password.model';
 import { ExternalRegistrationModel } from '../models/external-registration-model';
@@ -17,6 +16,7 @@ import { AppState } from '../../app/app-store';
 import { LoggedInActions } from '../auth-store/logged-in.actions';
 import { AuthTokenActions } from '../auth-token/auth-token.actions';
 import { ProfileActions } from '../profile/profile.actions';
+import { AuthHttp } from '../auth-http/auth-http.service';
 
 @Injectable()
 export class AccountService {
@@ -24,7 +24,7 @@ export class AccountService {
     constructor(private loadingBar: LoadingBarService,
                 private http: Http,
                 private httpExceptions: HttpExceptionService,
-                private authApi: AuthApiService,
+                private authHttp: AuthHttp,
                 private authTokens: AuthTokenService,
                 private store: Store<AppState>,
                 private loggedInAction: LoggedInActions,
@@ -35,7 +35,6 @@ export class AccountService {
 
     register(data: RegisterModel): Observable<Response> {
         return this.http.post("api/account/create", data)
-
             .catch( this.httpExceptions.handleError )
     }
 
@@ -54,15 +53,15 @@ export class AccountService {
     }
 
     sendForgotPassword( data ){
-        return this.authApi.post("/account/SendForgotPassword", data)
+        return this.authHttp.post("/account/SendForgotPassword", data)
     }
 
     changePassword(data: ChangePasswordModel){
-        return this.authApi.post("/account/changePassword", data)
+        return this.authHttp.post("/account/changePassword", data)
     }
 
     resetPassword(data: ResetPasswordModel){
-        return this.authApi.post("/account/resetPassword", data )
+        return this.authHttp.post("/account/resetPassword", data )
 
     }
 

@@ -1,11 +1,11 @@
-import {Component, OnInit} from "@angular/core";
-import {ProfileService} from "../../core/profile/profile.service";
-import {AlertService} from "../../core/alert/alert.service";
-import {ActivatedRoute} from "@angular/router";
-import {Http} from "@angular/http";
-import {LoadingBarService} from "../../core/loading-bar/loading-bar.service";
-import {AppState} from '../../app/app-store';
-import {Store} from '@ngrx/store';
+import { Component, OnInit } from "@angular/core";
+import { ProfileService } from "../../core/profile/profile.service";
+import { AlertService } from "../../core/alert/alert.service";
+import { ActivatedRoute } from "@angular/router";
+import { Http } from "@angular/http";
+import { LoadingBarService } from "../../core/loading-bar/loading-bar.service";
+import { AppState } from '../../app/app-store';
+import { Store } from '@ngrx/store';
 import { AuthTokenService } from '../../core/auth-token/auth-token.service';
 import { AuthHttp } from '../../core/auth-http/auth-http.service';
 
@@ -39,6 +39,7 @@ export class VerifyComponent implements OnInit{
     confirmEmail(code: string, id: string): void{
         code = encodeURIComponent(code);
 
+        //TODO: put this in a service
         this.http.get("api/account/ConfirmEmail?userId=" + id + "&code=" + code)
             .subscribe(
                 (res) => {

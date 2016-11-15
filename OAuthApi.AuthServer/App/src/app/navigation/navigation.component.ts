@@ -17,11 +17,11 @@ export class NavigationComponent implements OnInit{
                 private account: AccountService,
                 private store: Store<AppState>
     ){ }
-    username$: Observable<string>;
-    loggedIn$: Observable<boolean>
+    username: Observable<string>;
+    loggedIn: Observable<boolean>
 
     ngOnInit(): void {
-        this.username$ = this.store.select( state => state.auth.profile.unique_name);
-        this.loggedIn$ = this.store.select( state => state.auth.loggedIn);
+        this.username = this.store.select( state => state.auth.profile.unique_name);
+        this.loggedIn = this.store.select( state => state.auth.loggedIn);
     }
 }
