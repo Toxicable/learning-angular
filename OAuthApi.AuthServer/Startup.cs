@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
 
 namespace OAuthApi.AuthServer
 {
@@ -113,9 +114,40 @@ namespace OAuthApi.AuthServer
 
             app.UseOpenIddict();
 
-            app.UseMvcWithDefaultRoute();
-            
+
+            app.Use(async (context, next) =>
+            {
+                await next();
+
+                if (context.Response.StatusCode == 404
+                    && !Path.HasExtension(context.Request.Path.Value))
+                {
+                    context.Request.Path = "/index.html";
+                    await next();
+                }
+            });
+
+
+
+            app.UseMvc(routes =>
+            {
+                // Matches requests that correspond to an existent controller/action pair
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller}/{action}/{id?}");
+            });
+
+            DefaultFilesOptions options = new DefaultFilesOptions();
+            options.DefaultFileNames.Clear();
+            options.DefaultFileNames.Add("index.html");
+
+            app.UseDefaultFiles(options);
+            app.UseStaticFiles();
+
+
+
 
         }    
+
     }
 }

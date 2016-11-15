@@ -199,7 +199,8 @@ namespace OAuthApi.AuthServer.Controllers
             // Create a new ClaimsPrincipal containing the claims that
             // will be used to create an id_token, a token or a code.
             var principal = await _signInManager.CreateUserPrincipalAsync(user);
-
+            var identity = (ClaimsIdentity)principal.Identity;
+            identity.AddClaim(new Claim(ClaimTypes.GivenName, user.FirstName ?? ""));
             // Note: by default, claims are NOT automatically included in the access and identity tokens.
             // To allow OpenIddict to serialize them, you must attach them a destination, that specifies
             // whether they should be included in access tokens, in identity tokens or in both.
