@@ -1,10 +1,10 @@
-import * as authReadyActions from './auth-ready.actions'
+import { AuthReadyActions, AuthReadyActionTypes } from './auth-ready.actions';
 
 const initalState: boolean = false
 
-export const reducer = (state = initalState, action: authReadyActions.Actions): boolean => {
+export const authReadyReducer = (state = initalState, action: AuthReadyActions): boolean => {
     switch (action.type){
-        case authReadyActions.ActionTypes.READY:
+        case AuthReadyActionTypes.READY:
             return true;
             
         default:

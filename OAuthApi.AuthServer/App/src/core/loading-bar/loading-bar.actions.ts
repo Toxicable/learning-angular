@@ -3,20 +3,29 @@ import { type } from '../../util/action-name-helper';
 import { AuthTokenModel } from '../models/auth-tokens.model';
 import { Alert } from '../models/alert.model';
 
-export const ActionTypes = {
+export const LoadingBarActionTypes = {
     START: type('[LoadingBar] Start'),
     DONE: type('[LoadingBar] Done')
 }
 
-export class StartAction implements Action{
-    type = ActionTypes.DONE;
+export class LoadingBarAction{
+    Start(){
+        return new StartAction();
+    }
+    Done(){
+        return new DoneAction();
+    }
+}
+
+class StartAction implements Action{
+    type = LoadingBarActionTypes.DONE;
     constructor(){}
 }
 
-export class DoneAction implements Action{
-    type = ActionTypes.START;
+class DoneAction implements Action{
+    type = LoadingBarActionTypes.START;
     constructor(){}
 }
 
 
-export type Actions = StartAction | DoneAction;
+export type LoadingBarActions = StartAction | DoneAction;

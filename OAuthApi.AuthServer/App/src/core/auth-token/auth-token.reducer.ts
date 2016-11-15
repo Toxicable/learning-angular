@@ -2,7 +2,7 @@ import { ActionReducer, Action, Store } from '@ngrx/store';
 import { Injectable } from '@angular/core';
 import { AppState } from '../../app/app-store';
 import { AuthTokenModel } from '../models/auth-tokens.model';
-import * as authTokenActions from './auth-token.actions'
+import { AuthTokenActionTypes, AuthTokenActions } from './auth-token.actions';
 
 const initalState: AuthTokenModel ={
     id_token: null,
@@ -12,12 +12,12 @@ const initalState: AuthTokenModel ={
     token_type: null
 }
 
-export const reducer = (state = initalState, action: authTokenActions.Actions): AuthTokenModel => {
+export const authTokenReducer = (state = initalState, action: AuthTokenActions): AuthTokenModel => {
     switch (action.type){
-        case authTokenActions.ActionTypes.LOAD:
+        case AuthTokenActionTypes.LOAD:
             return action.payload;
 
-        case authTokenActions.ActionTypes.DELETE:
+        case AuthTokenActionTypes.DELETE:
             return initalState;
 
         default:

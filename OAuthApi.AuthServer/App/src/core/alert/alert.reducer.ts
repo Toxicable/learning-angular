@@ -1,18 +1,18 @@
 import { ActionReducer, Action } from '@ngrx/store';
 import { Alert } from '../../core/models/alert.model';
-import * as alertActions from './alert.actions';
+import { AlertActions, AlertActionTypes } from './alert.actions';
 
 const initalState: Alert[] = []
 
-export const reducer = (state = initalState, action: alertActions.Actions): Alert[] => {
+export const alertReducer = (state = initalState, action: AlertActions): Alert[] => {
     switch (action.type){
-        case alertActions.ActionTypes.ADD:
+        case AlertActionTypes.ADD:
             return [
                 ...state,
                 action.payload
             ];
 
-        case alertActions.ActionTypes.DELETE:
+        case AlertActionTypes.DELETE:
             return state.filter( alert =>
                 alert.message !== action.payload.message
             );

@@ -5,6 +5,7 @@ import {AlertType} from "../models/alert-types";
 import {Store} from '@ngrx/store';
 import {AppState} from '../../app/app-store';
 import * as alertActions from './alert.actions';
+import { AlertAtion } from './alert.actions';
 
 @Injectable()
 export class AlertService{
@@ -27,11 +28,11 @@ export class AlertService{
     }
 
     private sendAlert(alert: Alert, delay:number = 3000){
-        this.store.dispatch(new alertActions.AddAction(alert));
+        this.store.dispatch(new AlertAtion().Add(alert));
         Observable.of(true)
             .delay(delay)
             .subscribe(
-                () => this.store.dispatch(new alertActions.DeleteAction(alert))
+                () => this.store.dispatch(new AlertAtion().Delete(alert))
             );
     }
 }

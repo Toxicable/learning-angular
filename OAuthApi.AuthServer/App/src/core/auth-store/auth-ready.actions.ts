@@ -1,13 +1,19 @@
 import { type } from '../../util/action-name-helper';
 import { Action } from '@ngrx/store';
 
-export const ActionTypes = {
+export const AuthReadyActionTypes = {
     READY: type('[AuthReady] True')
 }
 
-export class AuthReadyAction implements Action{
-    type = ActionTypes.READY;
+export class AuthReadyAction{
+    Ready(){
+        return new AuthIsReadyAction();
+    }
+}
+
+class AuthIsReadyAction implements Action{
+    type = AuthReadyActionTypes.READY;
     constructor(){}
 }
 
-export type Actions = AuthReadyAction;
+export type AuthReadyActions = AuthIsReadyAction;

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import {AlertService} from "../alert/alert.service";
-import {ProfileService} from "../profile/profile.service";
-import {AppState} from '../../app/app-store';
-import {Store} from '@ngrx/store';
-import {Observable} from 'rxjs';
+import { AlertService } from "../alert/alert.service";
+import { ProfileService } from "../profile/profile.service";
+import { AppState } from '../../app/app-store';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 import * as authReadyActions from '../auth-store/auth-ready.actions';
 import * as loggedInActions from '../auth-store/logged-in.actions';
 import { AuthState } from '../auth-store/auth.store';

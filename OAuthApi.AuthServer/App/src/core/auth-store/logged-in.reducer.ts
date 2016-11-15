@@ -1,14 +1,13 @@
-
-import * as loggedInActions from './logged-in.actions'
+import { LoggedInActionTypes, LoggedInActions } from './logged-in.actions';
 
 const initalState: boolean = false
 
-export const reducer = (state = initalState, action: loggedInActions.Actions): boolean => {
+export const loggedInReducer = (state = initalState, action: LoggedInActions): boolean => {
     switch (action.type){
-        case loggedInActions.ActionTypes.LOGGED_IN:
+        case LoggedInActionTypes.LOGGED_IN:
             return true;
 
-        case loggedInActions.ActionTypes.NOT_LOGGED_IN:
+        case LoggedInActionTypes.NOT_LOGGED_IN:
             return false;
 
         default:

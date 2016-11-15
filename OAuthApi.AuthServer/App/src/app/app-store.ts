@@ -3,10 +3,10 @@ import { StoreModule }        from '@ngrx/store';
 import { User }               from '../+admin/models/user';
 import { Alert }              from '../core/models/alert.model';
 //reducers
-import * as alertReducer      from '../core/alert/alert.reducer';
-import * as loadingBarReducer from '../core/loading-bar/loading-bar.reducer';
 import { usersReducer }       from '../+admin/users/user-reducer';
 import { authReducer, AuthState }  from '../core/auth-store/auth.store';
+import { loadingBarReducer } from '../core/loading-bar/loading-bar.reducer';
+import { alertReducer } from '../core/alert/alert.reducer';
 
 export interface AppState{
     users: User[],
@@ -19,7 +19,7 @@ export interface AppState{
 export const providedStore = StoreModule
     .provideStore({
         users: usersReducer,
-        alerts: alertReducer.reducer,
-        loading: loadingBarReducer.reducer,
+        alerts: alertReducer,
+        loading: loadingBarReducer,
         auth: authReducer
     });

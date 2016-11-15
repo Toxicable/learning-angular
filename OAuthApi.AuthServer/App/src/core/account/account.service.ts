@@ -12,11 +12,11 @@ import { ExternalRegistrationModel } from '../models/external-registration-model
 import { ExternalLoginModel } from '../models/external-login-model';
 import { AuthTokenModel } from '../models/auth-tokens.model';
 import { AuthTokenService } from '../auth-token/auth-token.service';
-import * as authTokenActions from '../auth-token/auth-token.actions'
 import { Store, StoreModule } from '@ngrx/store';
 import { AppState } from '../../app/app-store';
-import * as profileActions from '../profile/profile.actions'
-import * as loggedInActions from '../auth-store/logged-in.actions'
+import { LoggedInAction } from '../auth-store/logged-in.actions';
+import { AuthTokenAction } from '../auth-token/auth-token.actions';
+import { ProfileAction } from '../profile/profile.actions';
 
 @Injectable()
 export class AccountService {
@@ -67,9 +67,9 @@ export class AccountService {
         this.authTokens.deleteTokens();
         this.authTokens.unsubscribeRefresh();
 
-        this.store.dispatch(new loggedInActions.NotLoggedInAction());
-        this.store.dispatch(new authTokenActions.DeleteAction());
-        this.store.dispatch(new profileActions.DeleteAction());
+        this.store.dispatch(new LoggedInAction().NotLoggedIn());
+        this.store.dispatch(new AuthTokenAction().Delete());
+        this.store.dispatch(new ProfileAction().Delete());
     }
 
 }

@@ -3,20 +3,29 @@ import { type } from '../../util/action-name-helper';
 import { AuthTokenModel } from '../models/auth-tokens.model';
 import { Alert } from '../models/alert.model';
 
-export const ActionTypes = {
+export const AlertActionTypes = {
     ADD: type('[Alert] Add'),
     DELETE: type('[Alert] Delete')
 }
 
-export class DeleteAction implements Action{
-    type = ActionTypes.DELETE;
+export class AlertAtion{
+    Add(payload: Alert){
+        return new AddAction(payload);
+    }
+    Delete(payload: Alert){
+        return new DeleteAction(payload);
+    }
+}
+
+class DeleteAction implements Action{
+    type = AlertActionTypes.DELETE;
     constructor(public payload: Alert){}
 }
 
-export class AddAction implements Action{
-    type = ActionTypes.ADD;
+class AddAction implements Action{
+    type = AlertActionTypes.ADD;
     constructor(public payload: Alert){}
 }
 
 
-export type Actions = AddAction | DeleteAction;
+export type AlertActions = AddAction | DeleteAction;
