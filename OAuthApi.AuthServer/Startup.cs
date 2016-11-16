@@ -11,6 +11,7 @@ using System.IO;
 using OpenIddict;
 using CryptoHelper;
 using OAuthApi.AuthServer.Extentions;
+using AutoMapper;
 
 namespace OAuthApi.AuthServer
 {
@@ -39,8 +40,9 @@ namespace OAuthApi.AuthServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //TODO: stringly ttype this
-            services.AddSingleton<IConfiguration>(Configuration);
+            var env = services.BuildServiceProvider().GetRequiredService<IHostingEnvironment>();
+            
+            services.AddSingleton<Microsoft.Extensions.Configuration.IConfiguration>(Configuration);
             services.AddTransient< IExternalAuthorizationManager, ExternalAuthorizationManager>();
 
             services.AddMvc();
@@ -49,6 +51,12 @@ namespace OAuthApi.AuthServer
                 .AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=aspnet5-openiddict-sample;Trusted_Connection=True;MultipleActiveResultSets=true"));
 
+            var config = new MapperConfiguration(x =>
+            {
+
+            });
+
+            services.AddSingleton(sp => config.CreateMapper());
 
 
             // Register the Identity services.
@@ -56,26 +64,35 @@ namespace OAuthApi.AuthServer
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            // Register the OpenIddict services, including the default Entity Framework stores.
-            services.AddOpenIddict<ApplicationDbContext>()
-                // Register the ASP.NET Core MVC binder used by OpenIddict.
-                // Note: if you don't call this method, you won't be able to
-                // bind OpenIdConnectRequest or OpenIdConnectResponse parameters.
-                .AddMvcBinders()
-                // Enable the token endpoint.
-                .EnableTokenEndpoint("/connect/token")
 
-                // Enable the password and the refresh token flows.
-                .AllowPasswordFlow()
-                .AllowRefreshTokenFlow()                                   //or should this just be external then check in the controller
-                .AllowCustomFlow("urn:ietf:params:oauth:grant-type:external_identity_token")
-                // During development, you can disable the HTTPS requirement.
-                .DisableHttpsRequirement()
+            var builder = services.AddOpenIddict<ApplicationDbContext>()
+               .AddMvcBinders()
+               .EnableTokenEndpoint("/connect/token")
+               .AllowPasswordFlow()
+               .AllowRefreshTokenFlow()                                   //or should this just be external then check in the controller
+               .AllowCustomFlow("urn:ietf:params:oauth:grant-type:external_identity_token");
 
-                // Register a new ephemeral key, that is discarded when the application
-                // shuts down. Tokens signed using this key are automatically invalidated.
-                // This method should only be used during development.
-                .AddEphemeralSigningKey();
+            if (env.IsDevelopment())
+            {
+                builder.AddEphemeralSigningKey();
+            }
+            else
+            {
+                //add in cert fingerprint
+                builder.AddSigningCertificate(Configuration[$"AppSettings:CertFingerPrint"]);
+            }
+
+            builder.Configure(options =>
+            {
+                options.AllowInsecureHttp = env.IsDevelopment();
+                options.ApplicationCanDisplayErrors = env.IsDevelopment();
+
+                options.TokenEndpointPath = "/connect/token";
+
+                // options.AccessTokenLifetime =
+                //todo sort this out
+                //    new TimeSpan(0, int.Parse(Configuration[$"AppSettings:AccessTokenLifetime"]), 0);
+            });
 
             // Note: if you don't explicitly register a signing key, one is automatically generated and
             // persisted on the disk. If the key cannot be persisted, an exception is thrown.
@@ -136,7 +153,7 @@ namespace OAuthApi.AuthServer
             app.UseDefaultFiles(options);
             app.UseStaticFiles();
 
-            SeedDatabase(app);
+            //SeedDatabase(app);
         }
 
         private void SeedDatabase(IApplicationBuilder app)
@@ -148,16 +165,10 @@ namespace OAuthApi.AuthServer
             using (var context = new ApplicationDbContext(options))
             {
                 //context.Database.EnsureDeleted();
-                context.Database.EnsureCreated();
+                //context.Database.EnsureCreated();
 
                 if (!context.Applications.Any())
                 {
-                    context.Applications.Add(new OpenIddictApplication
-                    {
-                        ClientId = "ResourceServer02",
-                        ClientSecret = Crypto.HashPassword("secret_secret_secret"),
-                        Type = OpenIddictConstants.ClientTypes.Confidential
-                    });
                 }
 
                 context.SaveChanges();
