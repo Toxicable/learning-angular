@@ -6,12 +6,12 @@ import {BadRequest} from "../models/bad-request";
 
 @Injectable()
 export class HttpExceptionService{
-
+//TODO: impove this
     public handleError (res: Response) {
         //TODO: add logging here
 
-        const error = new Error(res.statusText);
-        error['response'] = res;
+        //const error = new Error(res.statusText);
+        //error['response'] = res;
 
         switch (res.status){
             case 400:
@@ -25,8 +25,7 @@ export class HttpExceptionService{
 
     public handleInternalServerError(res: Response){
         console.log(res);
-
-        return Observable.throw(res);
+        return Observable.throw([res.text()]);
     }
     public handleTokenBadRequest(res: Response) {
         let badRequest = res.json() as BadTokenRequest;
