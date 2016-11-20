@@ -16,10 +16,11 @@ export interface AppState{
     appStarting: boolean,
 }
 
-export const providedStore = StoreModule
+export const appStore = StoreModule
     .provideStore({
         users: usersReducer,
         alerts: alertReducer,
         loading: loadingBarReducer,
         auth: authReducer
-    });
+    }
+);

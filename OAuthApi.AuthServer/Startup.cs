@@ -144,36 +144,10 @@ namespace OAuthApi.AuthServer
                     context.Request.Path = "/index.html";
                     await next();
                 }
-            });            
+            });
 
-            DefaultFilesOptions options = new DefaultFilesOptions();
-            options.DefaultFileNames.Clear();
-            options.DefaultFileNames.Add("index.html");
-
-            app.UseDefaultFiles(options);
+            app.UseDefaultFiles();
             app.UseStaticFiles();
-
-            //SeedDatabase(app);
         }
-
-        private void SeedDatabase(IApplicationBuilder app)
-        {
-            var options = app
-                .ApplicationServices
-                .GetRequiredService<DbContextOptions<ApplicationDbContext>>();
-
-            using (var context = new ApplicationDbContext(options))
-            {
-                //context.Database.EnsureDeleted();
-                //context.Database.EnsureCreated();
-
-                if (!context.Applications.Any())
-                {
-                }
-
-                context.SaveChanges();
-            }
-        }
-
     }
 }
