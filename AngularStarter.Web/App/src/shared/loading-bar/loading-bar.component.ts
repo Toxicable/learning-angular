@@ -9,7 +9,7 @@ import {Store} from '@ngrx/store';
 <div *ngIf="loading$ | async">
     <md-progress-bar mode="indeterminate"></md-progress-bar>
 </div>`,
-    styleUrls: ['loading-bar.component.scss'],
+    styleUrls: ['loading-bar.component.css'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoadingBarComponent implements OnInit {
