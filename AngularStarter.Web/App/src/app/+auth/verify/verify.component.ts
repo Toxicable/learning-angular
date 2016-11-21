@@ -1,13 +1,13 @@
-import { Component, OnInit } from "@angular/core";
-import { ProfileService } from "../../core/profile/profile.service";
-import { AlertService } from "../../core/alert/alert.service";
-import { ActivatedRoute } from "@angular/router";
-import { Http } from "@angular/http";
-import { LoadingBarService } from "../../core/loading-bar/loading-bar.service";
-import { AppState } from '../../app/app-store';
+import { AuthHttp } from '../../../core/auth-http/auth-http.service';
+import { OnInit, Component } from '@angular/core';
+import { AlertService } from '../../../core/alert/alert.service';
+import { ProfileService } from '../../../core/profile/profile.service';
+import { ActivatedRoute } from '@angular/router';
+import { Http } from '@angular/http';
+import { LoadingBarService } from '../../../core/loading-bar/loading-bar.service';
 import { Store } from '@ngrx/store';
-import { AuthTokenService } from '../../core/auth-token/auth-token.service';
-import { AuthHttp } from '../../core/auth-http/auth-http.service';
+import { AuthTokenService } from '../../../core/auth-token/auth-token.service';
+import { AppState } from '../../app-store';
 
 @Component({
     selector: 'verify',

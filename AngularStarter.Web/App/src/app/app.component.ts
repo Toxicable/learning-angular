@@ -9,8 +9,7 @@ import { AppState } from './app-store';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent
- implements OnInit, OnDestroy 
+export class AppComponent implements OnInit, OnDestroy 
 {
 
     constructor(

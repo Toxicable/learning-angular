@@ -1,24 +1,25 @@
 import { Component, OnInit } from '@angular/core';
-import { ProfileService } from "../core/profile/profile.service";
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
-import { FormValidationService } from "../core/services/form-validation.service";
-import { AlertService } from '../core/alert/alert.service';
-import { AccountService } from '../core/account/account.service';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ProfileService } from '../../core/profile/profile.service';
+import { FormValidationService } from '../../core/services/form-validation.service';
+import { AccountService } from '../../core/account/account.service';
+import { AlertService } from '../../core/alert/alert.service';
 
 @Component({
     selector: 'account',
     templateUrl: 'account.component.html'
 })
 export class AccountComponent implements OnInit {
+
+    resetPasswordForm: FormGroup;
+    errors: string[];
+
     constructor(private profile: ProfileService,
                 private formBuilder: FormBuilder,
                 private formValidator: FormValidationService,
                 private account: AccountService,
                 private alert: AlertService
     ) { }
-    
-    resetPasswordForm: FormGroup;
-    errors: string[];
 
     ngOnInit() {
         this.resetPasswordForm = this.formBuilder.group({

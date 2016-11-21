@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core'
 import { FormGroup, Validators,    FormBuilder }    from '@angular/forms';
-import {FormValidationService} from "../../core/services/form-validation.service";
-import {AlertService} from "../../core/alert/alert.service";
+import {FormValidationService} from "../../../core/services/form-validation.service";
+import {AlertService} from "../../../core/alert/alert.service";
 import {Router} from "@angular/router";
-import { AccountService } from '../../core/account/account.service';
-import { ExternalAuthService } from '../../core/auth-token/external-auth.service';
+import { AccountService } from '../../../core/account/account.service';
+import { ExternalAuthService } from '../../../core/auth-token/external-auth.service';
 
 @Component({
     selector: 'register',

@@ -3,11 +3,12 @@ import {Observable} from "rxjs/Observable";
 import {Response} from "@angular/http";
 import {BadTokenRequest} from "../models/bad-token-request";
 import {BadRequest} from "../models/bad-request";
+import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 
 @Injectable()
 export class HttpExceptionService{
 //TODO: impove this
-    public handleError (res: Response) {
+    public handleError (res: Response): ErrorObservable {
         //TODO: add logging here
 
         //const error = new Error(res.statusText);

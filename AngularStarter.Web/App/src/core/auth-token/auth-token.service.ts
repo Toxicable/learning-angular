@@ -6,7 +6,7 @@ import { HttpExceptionService } from '../services/http-exceptions.service';
 import { AppState } from '../../app/app-store';
 import { Store } from '@ngrx/store';
 import { ProfileModel } from '../models/profile-model';
-import { LoginModel } from '../../+auth/models/login-model';
+import { LoginModel } from '../models/login-model';
 import { Storage } from '../storage';
 import { AlertService } from '../alert/alert.service';
 import { JwtHelper } from 'angular2-jwt';

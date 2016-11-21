@@ -1,7 +1,7 @@
-import {Routes, RouterModule} from "@angular/router";
-import {AuthenticatedAuthGuard} from "../core/guards/authenticated-auth-guard.service";
-import {ModuleWithProviders} from "@angular/core";
-import {AccountComponent} from "./account.component";
+import { ModuleWithProviders } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { AuthenticatedAuthGuard } from '../../core/guards/authenticated-auth-guard.service';
+import { AccountComponent } from './account.component';
 
 const accountRoutes: Routes = [
     {
