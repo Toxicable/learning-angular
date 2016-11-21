@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import {Observable} from 'rxjs/Observable';
-import {Response} from '@angular/http';
-import {BadTokenRequest} from '../models/bad-token-request';
-import {BadRequest} from '../models/bad-request';
+import { Observable } from 'rxjs/Observable';
+import { Response } from '@angular/http';
+import { BadTokenRequest } from '../models/bad-token-request';
+import { BadRequest } from '../models/bad-request';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 
 @Injectable()

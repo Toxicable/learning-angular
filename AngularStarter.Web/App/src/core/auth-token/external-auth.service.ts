@@ -23,7 +23,7 @@ export class ExternalAuthService {
             status     : true,
             cookie     : true,
             xfbml      : false,
-            version    : 'v2.8';
+            version    : 'v2.8'
         });
 
         gapi.load('auth', () => {});

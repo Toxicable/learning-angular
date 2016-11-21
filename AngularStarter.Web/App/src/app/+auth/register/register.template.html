@@ -6,18 +6,18 @@
 
     <div>
         <md-input placeholder="Username" formControlName="userName"></md-input>
-        <control-messages [control]="registerForm.controls.userName"></control-messages>
+        <app-control-messages [control]="registerForm.controls.userName"></app-control-messages>
     </div>
 
     <div [formGroup]="registerForm.controls.passwords">
         <div>
             <md-input placeholder="Password" formControlName="password"></md-input>
-            <control-messages [control]="registerForm.controls.passwords.controls.password"></control-messages>
+            <app-control-messages [control]="registerForm.controls.passwords.controls.password"></app-control-messages>
         </div>
 
         <div>
             <md-input placeholder="Confirm Password" formControlName="confirmPassword"></md-input>
-            <control-messages [control]="registerForm.controls.passwords.controls.confirmPassword"></control-messages>
+            <app-control-messages [control]="registerForm.controls.passwords.controls.confirmPassword"></app-control-messages>
         </div>
         <div *ngIf="registerForm.controls.passwords.errors?.invalidCompare && registerForm.controls.passwords.touched">
             Passwords must match

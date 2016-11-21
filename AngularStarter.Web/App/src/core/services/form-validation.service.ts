@@ -1,7 +1,7 @@
-import {FormGroup, FormControl} from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import { Injectable } from '@angular/core';
 
-@Injectable();
+Injectable();
 export class FormValidationService {
     getValidatorErrorMessage(validatorName: string, validatorValue?: any) {
         let config: any = {

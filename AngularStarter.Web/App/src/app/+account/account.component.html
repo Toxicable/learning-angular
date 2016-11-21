@@ -13,20 +13,20 @@
         <div>
             <label>Old Password</label>
             <input type="text" formControlName="oldPassword" />
-            <control-messages [control]="resetPasswordForm.controls.oldPassword"></control-messages>
+            <app-control-messages [control]="resetPasswordForm.controls.oldPassword"></app-control-messages>
         </div>
 
         <div [formGroup]="resetPasswordForm.controls.passwords">
             <div>
                 <label>password</label>
                 <input type="text" formControlName="password" />
-                <control-messages [control]="resetPasswordForm.controls.passwords.controls.password"></control-messages>
+                <app-control-messages [control]="resetPasswordForm.controls.passwords.controls.password"></app-control-messages>
             </div>
 
             <div>
                 <label>confirmPassword</label>
                 <input type="text" formControlName="confirmPassword" />
-                <control-messages [control]="resetPasswordForm.controls.passwords.controls.confirmPassword"></control-messages>
+                <app-control-messages [control]="resetPasswordForm.controls.passwords.controls.confirmPassword"></app-control-messages>
             </div>
             <div *ngIf="resetPasswordForm.controls.passwords.errors?.invalidCompare && resetPasswordForm.controls.passwords.touched">
                 Passwords must match
