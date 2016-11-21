@@ -1,8 +1,8 @@
 import { ModuleWithProviders }  from '@angular/core';
 import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
-import { HomeComponent } from "./home/home.component";
-import { NotFoundComponent } from "./not-found/not-found.component";
-import { UnauthorizedComponent } from "./unauthorized/unauthorized.component";
+import { HomeComponent } from './home/home.component';
+import { NotFoundComponent } from './not-found/not-found.component';
+import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { SuperAdminAuthGuard } from '../core/guards/super-admin-auth-guard.service';
 
 const appRoutes: Routes = [
@@ -15,16 +15,16 @@ const appRoutes: Routes = [
         component: HomeComponent
     },
     {
-        path:'admin',
+        path: 'admin',
         loadChildren: './+admin/admin.module#AdminModule',
         canLoad: [SuperAdminAuthGuard]
     },
     {
-        path:'auth',
+        path: 'auth',
         loadChildren: './+auth/auth.module#AuthModule'
     },
     {
-        path:'account',
+        path: 'account',
         loadChildren: './+account/account.module#AccountModule'
     },
     {
@@ -41,4 +41,4 @@ const appRoutes: Routes = [
 
 export const appRouting: ModuleWithProviders = RouterModule.forRoot(appRoutes, {
     preloadingStrategy: PreloadAllModules
-})
+});

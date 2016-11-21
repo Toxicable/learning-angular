@@ -7,17 +7,16 @@ import { Observable } from 'rxjs/Observable';
 import { Response } from '@angular/http';
 
 @Injectable()
-export class UserService{
+export class UserService {
+    path: string = '/users';
+
     constructor(private authHttp: AuthHttp,
                 private loadingBar: LoadingBarService,
                 private store: Store<AppState>
-    ){}
+    ) {}
 
-    path: string = '/users';
-
-    getUsers(): Observable<Response>{
+    getUsers(): Observable<Response> {
         return this.authHttp.get(this.path + '/getUsers')
             .do( users => this.store.dispatch({ type: 'GET_USERS', payload: users}) );
     }
-
 }

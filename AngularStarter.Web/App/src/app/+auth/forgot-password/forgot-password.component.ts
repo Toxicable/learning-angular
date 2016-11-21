@@ -1,21 +1,22 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {FormValidationService} from "../../../core/services/form-validation.service";
-import {AlertService} from "../../../core/alert/alert.service";
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormValidationService} from '../../../core/services/form-validation.service';
+import {AlertService} from '../../../core/alert/alert.service';
 import { AccountService } from '../../../core/account/account.service';
 
 @Component({
-    selector: 'forgot-password',
+    selector: 'app-forgot-password',
     templateUrl: 'forgot-password.component.html'
 })
-export class ForgotPasswordComponent implements OnInit{
+export class ForgotPasswordComponent implements OnInit {
+    forgotPasswordForm: FormGroup;
+
     constructor(private formBuilder: FormBuilder,
                 private alert: AlertService,
                 private account: AccountService,
                 private formValidator: FormValidationService
     ) { }
 
-    forgotPasswordForm: FormGroup;
 
     ngOnInit(): void {
         this.forgotPasswordForm = this.formBuilder.group({
@@ -23,11 +24,11 @@ export class ForgotPasswordComponent implements OnInit{
         });
     }
 
-    onSubmit(){
+    onSubmit() {
         this.account.sendForgotPassword(this.forgotPasswordForm.value)
             .subscribe(
-                () => this.alert.sendSuccess("Please check your email")
+                () => this.alert.sendSuccess('Please check your email')
 
-            )
+            );
     }
 }

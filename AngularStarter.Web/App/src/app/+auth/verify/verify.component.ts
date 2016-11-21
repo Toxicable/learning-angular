@@ -10,10 +10,10 @@ import { AuthTokenService } from '../../../core/auth-token/auth-token.service';
 import { AppState } from '../../app-store';
 
 @Component({
-    selector: 'verify',
+    selector: 'app-verify',
     templateUrl: './verify.component.html'
 })
-export class VerifyComponent implements OnInit{
+export class VerifyComponent implements OnInit {
     constructor(private profile: ProfileService,
                 private authHttp: AuthHttp,
                 private alert: AlertService,
@@ -22,43 +22,43 @@ export class VerifyComponent implements OnInit{
                 private loadingBar: LoadingBarService,
                 private tokens: AuthTokenService,
                 private store: Store<AppState>
-    ){}
+    ) {}
     ngOnInit(): void {
 
-        if(!this.profile.isEmailConfirmed()){
+        if (!this.profile.isEmailConfirmed()) {
             let code = this.route.snapshot.queryParams['code'];
             let id = this.route.snapshot.queryParams['userId'];
-            if(code && id){
-                this.confirmEmail(code, id)
-            }else{
+            if (code && id) {
+                this.confirmEmail(code, id);
+            }else {
                 this.sendConfirmationEmail();
             }
         }
     }
 
-    confirmEmail(code: string, id: string): void{
+    confirmEmail(code: string, id: string): void {
         code = encodeURIComponent(code);
 
-        //TODO: put this in a service
-        this.http.get("api/account/ConfirmEmail?userId=" + id + "&code=" + code)
+        // TODO: put this in a service
+        this.http.get('api/account/ConfirmEmail?userId=' + id + '&code=' + code)
             .subscribe(
                 (res) => {
                     this.tokens.refreshTokens()
                         .subscribe(
-                        () => this.alert.sendSuccess("Your email has been confirmed"),
-                        (res) => this.alert.sendError("an error occured soz")
+                        () => this.alert.sendSuccess('Your email has been confirmed'),
+                        _ => this.alert.sendError('an error occured soz')
                     );
                 },
-                (res) => this.alert.sendError("an error occured soz")
-        )
+                (res) => this.alert.sendError('an error occured soz')
+        );
     }
 
-    sendConfirmationEmail(): void{
-        this.authHttp.get("api/account/SendConfirmEmail")
+    sendConfirmationEmail(): void {
+        this.authHttp.get('api/account/SendConfirmEmail')
             .subscribe(
-                () => this.alert.sendSuccess("A confirmation email has been send"),
+                () => this.alert.sendSuccess('A confirmation email has been send'),
                 (error) => this.alert.sendError(error),
-        )
+        );
     }
 
 }

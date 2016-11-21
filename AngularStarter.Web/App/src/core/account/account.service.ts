@@ -33,39 +33,39 @@ export class AccountService {
 
 
     register(data: RegisterModel): Observable<Response> {
-        return this.http.post("api/account/create", data)
-            .catch( this.httpExceptions.handleError )
+        return this.http.post('api/account/create', data)
+            .catch( this.httpExceptions.handleError );
     }
 
-    externalRegister(model: ExternalRegistrationModel){
-        return this.http.post('/api/account/registerexternal', model)
+    externalRegister(model: ExternalRegistrationModel) {
+        return this.http.post('/api/account/registerexternal', model);
     }
 
-    externalLogin(model: ExternalLoginModel){
-        return this.authTokens.getTokens(model, "urn:ietf:params:oauth:grant-type:external_identity_token")
-            .do(() => this.authTokens.scheduleRefresh())        
+    externalLogin(model: ExternalLoginModel) {
+        return this.authTokens.getTokens(model, 'urn:ietf:params:oauth:grant-type:external_identity_token')
+            .do(() => this.authTokens.scheduleRefresh());
     }
 
     login(user: LoginModel)  {
-        return this.authTokens.getTokens(user, "password")
-            .do(res => this.authTokens.scheduleRefresh() )
+        return this.authTokens.getTokens(user, 'password')
+            .do(res => this.authTokens.scheduleRefresh() );
     }
 
-//TODO: give this a model
-    sendForgotPassword(data: any){
-        return this.authHttp.post("/account/SendForgotPassword", data)
+// TODO: give this a model
+    sendForgotPassword(data: any) {
+        return this.authHttp.post('/account/SendForgotPassword', data);
     }
 
-    changePassword(data: ChangePasswordModel){
-        return this.authHttp.post("/account/changePassword", data)
+    changePassword(data: ChangePasswordModel) {
+        return this.authHttp.post('/account/changePassword', data);
     }
 
-    resetPassword(data: ResetPasswordModel){
-        return this.authHttp.post("/account/resetPassword", data )
+    resetPassword(data: ResetPasswordModel) {
+        return this.authHttp.post('/account/resetPassword', data );
 
     }
 
-    logout(){
+    logout() {
         this.authTokens.deleteTokens();
         this.authTokens.unsubscribeRefresh();
 

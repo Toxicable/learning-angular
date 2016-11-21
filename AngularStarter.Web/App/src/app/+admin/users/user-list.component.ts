@@ -7,31 +7,33 @@ import { User } from '../models/user';
 import { AppState } from '../../app-store';
 
 @Component({
-    selector: 'user-list',
+    selector: 'app-user-list',
     templateUrl: 'user-list.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserListComponent implements OnInit {
+
+    users: Observable<User[]>;
+
     constructor(private userService: UserService,
                 private roleService: RoleService,
                 private store: Store<AppState>
     ) { }
 
     ngOnInit(): void {
-        this.users = this.store.select(state => state.users)
+        this.users = this.store.select(state => state.users);
 
         this.getUsers();
     }
-    users : Observable<User[]>;
 
-    getUsers(){
+    getUsers() {
         this.userService.getUsers()
-            .subscribe()
+            .subscribe();
     }
 
-    removeFromRole(userId: string, roleId: string){
+    removeFromRole(userId: string, roleId: string) {
         this.roleService.removeFromRole(userId, roleId)
-            .subscribe( )
+            .subscribe();
     }
 
 }

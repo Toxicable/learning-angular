@@ -6,7 +6,7 @@ import { AccountService } from '../../core/account/account.service';
 import { AlertService } from '../../core/alert/alert.service';
 
 @Component({
-    selector: 'account',
+    selector: 'app-account',
     templateUrl: 'account.component.html'
 })
 export class AccountComponent implements OnInit {
@@ -31,20 +31,17 @@ export class AccountComponent implements OnInit {
         });
     }
 
-    submitChangePassword(){
-        let password = Object.assign({}, this.resetPasswordForm.value, this.resetPasswordForm.controls["passwords"].value);
-        delete password["passwords"];
+    submitChangePassword() {
+        let password = Object.assign({}, this.resetPasswordForm.value, this.resetPasswordForm.controls['passwords'].value);
+        delete password['passwords'];
 
         this.account.changePassword(password)
             .subscribe(
-                () => this.alert.sendSuccess("Password successfully sent"),
+                () => this.alert.sendSuccess('Password successfully sent'),
                 errors => {
-                    this.alert.sendWarning(errors[0])
-                    console.log(errors)
+                    this.alert.sendWarning(errors[0]);
+                    console.log(errors);
                 }
-            )
+            );
     }
-
-
-
 }
