@@ -1,4 +1,3 @@
-import {Observable} from "rxjs";
 import {AppState} from '../app/app-store';
 import {Store} from '@ngrx/store';
 import {Injectable} from '@angular/core';
@@ -9,22 +8,22 @@ export abstract class LoggingBackend {
 
 @Injectable()
 export class Logger {
-    constructor(private loggingBackend: LoggingBackend){}
+    constructor(private loggingBackend: LoggingBackend) {}
 
-    log(payload: any){
+    log(payload: any) {
         this.loggingBackend.log(payload);
     }
 }
 
 @Injectable()
 export class ConsoleLoggerBackend implements LoggingBackend {
-    constructor(private store: Store<AppState>){}
-    log(payload: any): void{
+    constructor(private store: Store<AppState>) {}
+    log(payload: any): void {
         this.store
-            .subscribe((state: AppState) =>{
-                console.log("payload", payload);
+            .subscribe((state: AppState) => {
+                console.log('payload', payload);
 
-                console.log("state", state);
-            })
+                console.log('state', state);
+            });
     }
 }

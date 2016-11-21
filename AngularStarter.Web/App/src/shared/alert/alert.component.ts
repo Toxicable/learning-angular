@@ -15,7 +15,7 @@ export class AlertComponent implements OnInit {
 
     constructor(private alertService: AlertService,
                 private store: Store<AppState>
-    ){}
+    ) {}
 
     ngOnInit(): void {
         this.alerts = this.store.select( state => state.alerts);

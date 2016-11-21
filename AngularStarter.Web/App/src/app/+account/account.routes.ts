@@ -18,6 +18,4 @@ const accountRoutes: Routes = [
     }
 ];
 
-
-
 export const accountRouting: ModuleWithProviders = RouterModule.forChild(accountRoutes);

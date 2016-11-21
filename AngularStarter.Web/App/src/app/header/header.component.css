@@ -3,14 +3,7 @@
   justify-content: space-between;
   width: 100%;
 }
-.left{
 
-}
-.right{
-}
-
-.header-navigation__link{
-}
 .header-navigation__link--hover{
   background-color: dimgrey;
 }
