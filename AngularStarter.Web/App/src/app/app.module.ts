@@ -7,7 +7,6 @@ import { CoreModule } from '../core/core.module';
 import { SharedModule } from '../shared/shared.module';
 import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from './not-found/not-found.component';
-import { NavigationComponent } from './navigation/navigation.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { appRouting } from './app.routing';
 import { StoreModule } from '@ngrx/store';
@@ -15,13 +14,14 @@ import { alertReducer } from '../core/alert/alert.reducer';
 import { loadingBarReducer } from '../core/loading-bar/loading-bar.reducer';
 import { authReducer } from '../core/auth-store/auth.store';
 import { usersReducer } from './+admin/users/user-reducer';
+import { HeaderComponent } from './header/header.component';
 
 @NgModule({
   declarations: [
      AppComponent,
      HomeComponent,
      NotFoundComponent,
-     NavigationComponent,
+     HeaderComponent,
      UnauthorizedComponent,
   ],
   imports: [

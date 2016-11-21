@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy} from '@angular/core'
+import { Component, OnInit } from '@angular/core';
 import { AlertService} from '../../core/alert/alert.service';
 import { Observable} from 'rxjs/Observable';
 import { Alert} from '../../core/models/alert.model';
@@ -6,7 +6,7 @@ import { AppState} from '../../app/app-store';
 import { Store} from '@ngrx/store';
 
 @Component({
-    selector: 'alert',
+    selector: 'app-alerts',
     templateUrl: 'alert.component.html',
     styleUrls: ['alert.component.css']
 })

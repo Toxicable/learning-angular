@@ -5,3 +5,8 @@
 body{
   font-family: Arial, serif;
 }
+
+a{
+  color:blue;
+  text-decoration: none;
+}
