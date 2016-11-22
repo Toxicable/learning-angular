@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
-import { Logger } from '../logger';
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs';
 import { AccountService } from '../account/account.service';
@@ -14,7 +13,6 @@ declare let gapi: any;
 export class ExternalAuthService {
 
     constructor(private http: Http,
-                private logger: Logger,
                 private account: AccountService
     ) {}
 
