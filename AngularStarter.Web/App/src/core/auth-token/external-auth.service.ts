@@ -4,6 +4,7 @@ import { Logger } from '../logger';
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs';
 import { AccountService } from '../account/account.service';
+import { AppSettings } from '../../app-settings';
 
 declare let FB: any;
 declare let gapi: any;
@@ -19,7 +20,7 @@ export class ExternalAuthService {
 
     init() {
         FB.init({
-            appId      : '', // appSettings.appSettings.auth.external.facebookAppId,
+            appId      : AppSettings.Authentication.facebookAppId,
             status     : true,
             cookie     : true,
             xfbml      : false,
@@ -81,7 +82,7 @@ export class ExternalAuthService {
         return Observable.create((observer: Observer<any>) => {
             try {
                 gapi.auth.authorize({
-                    client_id: '', // appSettings.appSettings.auth.external.googleClientId,
+                    client_id: AppSettings.Authentication.googleClientId,
                     scope: 'profile'
                 }, (token: any) => {
                     observer.next(token.access_token);

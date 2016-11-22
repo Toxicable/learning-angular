@@ -8,7 +8,6 @@ import { ProfileService } from './profile/profile.service';
 import { HttpExceptionService } from './services/http-exceptions.service';
 import { FormValidationService } from './services/form-validation.service';
 import { AuthGuard } from './guards/auth-guard.service';
-import { Logger, ConsoleLoggerBackend, LoggingBackend } from './logger';
 import { ExternalAuthService } from './auth-token/external-auth.service';
 import { AuthTokenService } from './auth-token/auth-token.service';
 import { AccountService } from './account/account.service';
@@ -46,8 +45,6 @@ import { AuthReadyActions } from './auth-store/auth-ready.actions';
         AuthReadyActions,
 
         { provide: StorageBackend, useClass: LocalStorageBackend },
-        { provide: LoggingBackend, useClass: ConsoleLoggerBackend },
-        Logger,
         Storage,
     ]
 
