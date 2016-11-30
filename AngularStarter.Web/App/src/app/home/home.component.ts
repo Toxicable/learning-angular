@@ -12,7 +12,7 @@ export class HomeComponent {
     constructor(private snackbar: MdSnackBar) { }
 
     failedAttempt() {
-        var bar = this.snackbar.open('It didn\'t quite work!',);
+        var bar = this.snackbar.open('It didn\'t quite work!', 'close');
     }
 
 }

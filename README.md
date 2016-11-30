@@ -1,2 +1,6 @@
 # AngularStarter
-Angular Starter with OAuth Auth and net.45 backend
+-Angular CLI
+--ngrx/Store
+
+-ASP.NET Core targeting net461
+--OpenIddict

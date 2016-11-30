@@ -3,7 +3,7 @@
 <div class="users">
     <div *ngIf="users" >
         <div *ngFor="let user of users | async" >
-            <user [user]="user"></user>
+            <app-user [user]="user"></app-user>
         </div>
     </div>
 </div>
