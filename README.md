@@ -1,6 +1,2 @@
 # AngularStarter
--Angular CLI
---ngrx/Store
-
--ASP.NET Core targeting net461
---OpenIddict
+A collection of random Angular components aswell as a login system on asp.net Core with OpenIddict
